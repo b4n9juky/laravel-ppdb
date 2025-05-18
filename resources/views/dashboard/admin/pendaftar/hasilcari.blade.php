@@ -22,14 +22,8 @@
     <td class="px-4 py-2 border text-center">
 
         @foreach($row->berkas as $file)
-        <ul class="list-disc list-inside text-left text-xs uppercase">
 
-            <li>
-                <a href="#" class="lihat-berkas text-blue-600" data-id="{{ $row->id }}">
-                    {{ $file->jenis_berkas }}
-                </a>
-            </li>
-        </ul>
+        <a href="{{ asset('storage/' . $file->file_path) }}" data-lightbox="{{$file->file_path}}" class="flex"><i data-feather="image"></i>{{$file->jenis_berkas}}</a>
         @endforeach
 
     </td>
@@ -38,12 +32,20 @@
         <form action="{{ route('pendaftar.approve', $row->id) }}" method="POST">
             @csrf
 
-            <x-primary-button type="submit">Proses</x-primary-button>
+            <button type="submit" class="inline-flex items-center gap-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">
+                <i data-feather="check"></i> <!-- Feather icon -->
+
+            </button>
         </form>
+    </td>
+    <td class="px-4 py-2 border text-center">
         <form action="{{ route('pendaftar.batal', $row->id) }}" method="POST">
             @csrf
 
-            <x-danger-button type="submit">Batal</x-danger-button>
+            <button type="submit" class="inline-flex items-center gap-1 bg-red-600 text-white px-3 py-2 rounded hover:bg-blue-700">
+                <i data-feather="x-circle"></i> <!-- Feather icon -->
+
+            </button>
         </form>
 
 

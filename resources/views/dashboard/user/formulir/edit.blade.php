@@ -90,7 +90,7 @@
                         </div>
                         <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">No HP</label>
-                            <input type="text" id="nama" name="no_hp"
+                            <input type="number" id="nama" name="no_hp"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value="{{$data->no_hp}}">
                         </div>

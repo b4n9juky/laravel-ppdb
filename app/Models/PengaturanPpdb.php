@@ -15,6 +15,7 @@ class PengaturanPpdb extends Model
     protected $fillable = [
         'nama_sekolah',
         'alamat_sekolah',
+        'kota',
         'kontak',
         'nama_kepsek',
         'logo_sekolah',

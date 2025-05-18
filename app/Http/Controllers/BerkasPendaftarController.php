@@ -14,11 +14,16 @@ class BerkasPendaftarController extends Controller
 {
 
     public function index()
+
     {
 
 
 
         $pendaftar = Pendaftars::where('user_id', Auth::id())->first();
+
+
+
+
         // $nilai = $pendaftar->nilaiPendaftar()->with('mapel')->get();
         // Ambil pendaftar berdasarkan user yang sedang login
         // $pendaftar = Pendaftars::where('id', Auth::id())->first();
@@ -55,7 +60,22 @@ class BerkasPendaftarController extends Controller
 
     public function destroy($id)
     {
+
+
         $berkas = BerkasPendaftar::findOrFail($id);
+
+        $filePath = 'public/' . $berkas->file_path;
+
+        if (Storage::exists($filePath)) {
+            Storage::delete($filePath);
+        }
+
+        // Tambahan perlindungan jika Storage gagal
+        $fullPath = storage_path('app/public/' . $berkas->file_path);
+        if (file_exists($fullPath)) {
+            unlink($fullPath);
+        }
+
         $berkas->delete();
 
         return back()->with('success', 'Berkas berhasil dihapus.');

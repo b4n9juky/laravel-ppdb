@@ -30,7 +30,7 @@ Route::get('/2025', [HomePpdbController::class, 'loginAdmin'])->name('admin.logi
 //     Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 // });
 
-Route::get('/datasiswa/search', [PendaftaranController::class, 'search'])->name('datasiswa.search');
+
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
 
@@ -45,7 +45,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/pendaftar/{id}/berkas', [PendaftaranController::class, 'showBerkas']);
     Route::post('/datasiswa/{id}/approve', [PendaftaranController::class, 'approve'])->name('pendaftar.approve');
     Route::get('/siswa/by-jalur/{jalur_id}', [PendaftaranController::class, 'getByJalur']);
-    Route::get('/siswa/rekap', [PendaftaranController::class, 'datasiswaDiterima'])->name('siswa.diterima');
+
+
 
 
     /////////////////////////////
@@ -74,6 +75,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/pengaturan/{id}/manifest', [PengaturanPpdbController::class, 'updateData'])->name('admin.updatedata');
     //update pengaturan
     Route::post('/jadwal-pendaftaran/{id}', [PengaturanPpdbController::class, 'update']);
+
+
+    Route::get('/siswa/data', [PendaftaranController::class, 'data'])->name('siswa.data');
+    Route::get('/pendaftar/diterima', [PendaftaranController::class, 'pendaftarDiterima'])->name('pendaftar.diterima');
+    Route::get('/pendaftar/dataditerima', [PendaftaranController::class, 'dataDiterima'])->name('pendaftar.dataditerima');
+
+    // validasi diterima
+
 });
 // pencarian dengan ajax+jquery
 
@@ -91,6 +100,20 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 Route::middleware(['auth', 'role:operator'])->group(function () {
     Route::get('/operator/dashboard', fn() => view('dashboard.operator.dashboard'))->name('operator.dashboard');
+    Route::get('/datasiswa', [PendaftaranController::class, 'datasiswa'])->name('admin.datasiswa');
+    Route::post('/datasiswa/{id}/batal', [PendaftaranController::class, 'batal'])->name('pendaftar.batal');
+    Route::get('/datasiswa/{id}/status', [PendaftaranController::class, 'status'])->name('siswa.status');
+    Route::put('/datasiswa/{id}/update', [PendaftaranController::class, 'update'])->name('status.update');
+    Route::get('/datasiswa/{id}', [PendaftaranController::class, 'editnilai'])->name('siswa.editnilai');
+    Route::put('/datasiswa/{id}', [PendaftaranController::class, 'updatenilai'])->name('siswa.updatenilai');
+    Route::post('/datasiswa/update-massal', [PendaftaranController::class, 'updateMassal'])->name('nilai.updateMassal');
+    Route::get('/admin/pendaftar/{id}/berkas', [PendaftaranController::class, 'showBerkas']);
+    Route::post('/datasiswa/{id}/approve', [PendaftaranController::class, 'approve'])->name('pendaftar.approve');
+    Route::get('/siswa/by-jalur/{jalur_id}', [PendaftaranController::class, 'getByJalur']);
+
+    Route::get('/siswa/data', [PendaftaranController::class, 'data'])->name('siswa.data');
+    Route::get('/pendaftar/diterima', [PendaftaranController::class, 'pendaftarDiterima'])->name('pendaftar.diterima');
+    Route::get('/pendaftar/dataditerima', [PendaftaranController::class, 'dataDiterima'])->name('pendaftar.dataditerima');
 });
 
 Route::middleware(['auth', 'role:user'])->group(function () {

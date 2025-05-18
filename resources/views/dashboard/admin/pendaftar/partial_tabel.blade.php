@@ -9,7 +9,7 @@
             <th class="px-4 py-2 border">Total Nilai</th>
             <th class="px-4 py-2 border">Waktu Pendaftaran</th>
             <th class="px-4 py-2 border">Berkas</th>
-            <th class="px-4 py-2 border">Atur</th>
+            <th class="px-4 py-2 border" colspan="2">Atur</th>
         </tr>
     </thead>
     <tbody>
@@ -48,11 +48,19 @@
             <td class="px-4 py-2 border text-center">
                 <form action="{{ route('pendaftar.approve', $row->id) }}" method="POST">
                     @csrf
-                    <x-primary-button type="submit">Proses</x-primary-button>
+                    <button type="submit" class="inline-flex items-center gap-1 bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">
+                        <i data-feather="check"></i> <!-- Feather icon -->
+
+                    </button>
                 </form>
+            </td>
+            <td class="px-4 py-2 border text-center">
                 <form action="{{ route('pendaftar.batal', $row->id) }}" method="POST">
                     @csrf
-                    <x-danger-button type="submit">Batal</x-danger-button>
+                    <button type="submit" class="inline-flex items-center gap-1 bg-red-600 text-white px-3 py-2 rounded hover:bg-blue-700">
+                        <i data-feather="x-circle"></i> <!-- Feather icon -->
+
+                    </button>
                 </form>
             </td>
         </tr>

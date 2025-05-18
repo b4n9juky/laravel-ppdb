@@ -96,13 +96,13 @@
                             <label for="jenis_berkas" class="block font-medium text-sm text-gray-700">Jenis Berkas</label>
                             <select name="jenis_berkas" class="mt-1 block w-full" required>
                                 <option value="">Pilih Jenis</option>
-                                <option value="SKL">SKL</option>
-                                <option value="Foto">Pas Foto</option>
-                                <option value="Kartu Keluarga">Kartu Keluarga</option>
-                                <option value="Akta Kelahiran">Akta Lahir</option>
-                                <option value="Kartu KIP">Kartu KIP ( Jika ada )</option>
-                                <option value="Piagam">Piagam / Sertifikat (Jika ada )</option>
-                                <option value="Rapor">Rapor</option>
+                                <option value="skl">SKL</option>
+                                <option value="foto">Pas Foto</option>
+                                <option value="kk">Kartu Keluarga</option>
+                                <option value="akta_lahir">Akta Lahir</option>
+                                <option value="kip">Kartu KIP ( Jika ada )</option>
+                                <option value="piagam">Piagam / Sertifikat (Jika ada )</option>
+                                <option value="rapor">Rapor</option>
 
 
                             </select>

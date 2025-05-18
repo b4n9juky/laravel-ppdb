@@ -7,15 +7,38 @@ use Illuminate\Http\Request;
 use App\Models\NilaiPendaftar;
 use App\Models\Pendaftars;
 use App\Models\Mapel;
+use App\Models\BerkasPendaftar;
 use Illuminate\Support\Facades\Auth;
 
 class NilaiPendaftarController extends Controller
 {
     public function index()
     {
-        $pendaftar = Pendaftars::where('user_id', Auth::id())->firstOrFail();
-        $nilai = $pendaftar->nilaiPendaftar()->with('mapel')->get();
-        return view('dashboard.user.nilai.index', compact('nilai'));
+        // $pendaftar = Pendaftars::where('user_id', Auth::id())->firstOrFail();
+
+        //pendaftar wajib mengunggah berkas dokumennya untuk dapat lanjut ke proses ini
+
+        $pendaftar = Pendaftars::with('berkas')->where('user_id', Auth::id())->first();
+
+        if (!$pendaftar) {
+            return back()->with('error', 'Data pendaftar tidak ditemukan.');
+        }
+
+        // Ambil jenis dokumen dan ubah ke huruf kecil semua
+        $dokumenDiunggah = collect($pendaftar->berkas)
+            ->pluck('jenis_berkas')
+            ->map(fn($item) => strtolower($item))
+            ->toArray();
+
+        $wajib = ['foto', 'kk', 'skl'];
+        $kurang = array_diff($wajib, $dokumenDiunggah);
+
+        if (!empty($kurang)) {
+            return back()->with('error', 'Dokumen wajib belum lengkap: ' . implode(', ', $kurang));
+        } else {
+            $nilai = $pendaftar->nilaiPendaftar()->with('mapel')->get();
+            return view('dashboard.user.nilai.index', compact('nilai'));
+        }
     }
 
     public function create()

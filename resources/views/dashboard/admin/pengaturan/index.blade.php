@@ -29,6 +29,13 @@
 
                         </div>
                         <div class="mb-4">
+                            <label for="nama" class="block text-gray-700 font-semibold mb-2">Kota</label>
+                            <input type="text" name="kota"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{$settings->kota}}" required>
+
+                        </div>
+                        <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Nomor Kontak</label>
                             <input type="number" name="kontak"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

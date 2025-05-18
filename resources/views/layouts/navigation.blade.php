@@ -14,18 +14,44 @@
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
                     @if (Auth::user()->role === \App\Enums\UserRole::ADMIN)
+
                     <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('admin.datasiswa')" :active="request()->routeIs('admin.datasiswa')">
-                        {{ __('Data Pendaftar') }}
-                    </x-nav-link>
+
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <div> <x-nav-link :href="route('admin.datasiswa')" :active="request()->routeIs('admin.datasiswa')">
+                                            {{ __('Data Pendaftar') }}
+                                        </x-nav-link></div>
+
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('pendaftar.diterima')">
+                                    {{ __('Diterima') }}
+                                </x-dropdown-link>
+
+
+
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
                     <x-nav-link :href="route('pengguna.dashboard')" :active="request()->routeIs('pengguna.dashboard')">
                         {{ __('Data Pengguna') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.jalurdaftar')" :active="request()->routeIs('admin.jalurdaftar')">
                         {{ __('Jalur Pendaftaran') }}
                     </x-nav-link>
+
                     <x-nav-link :href="route('admin.mapel')" :active="request()->routeIs('admin.mapel')">
                         {{ __('Mata Pelajaran - Nilai Ujian') }}
                     </x-nav-link>
@@ -33,6 +59,54 @@
                         {{ __('Pengaturan') }}
                     </x-nav-link>
                     @endif
+
+
+                    <!-- ROLE OPERATOR BEGINS HERE-->
+
+                    @if (Auth::user()->role === \App\Enums\UserRole::OPERATOR)
+
+                    <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
+
+                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                        <x-dropdown align="right" width="48">
+                            <x-slot name="trigger">
+                                <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                    <div> <x-nav-link :href="route('admin.datasiswa')" :active="request()->routeIs('admin.datasiswa')">
+                                            {{ __('Data Pendaftar') }}
+                                        </x-nav-link></div>
+
+                                    <div class="ms-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </button>
+                            </x-slot>
+
+                            <x-slot name="content">
+                                <x-dropdown-link :href="route('pendaftar.diterima')">
+                                    {{ __('Diterima') }}
+                                </x-dropdown-link>
+
+
+
+                            </x-slot>
+                        </x-dropdown>
+                    </div>
+
+                    @endif
+
+
+
+                    <!-- ROLE USER BEGIN HERE -->
+
+
+
+
+
+
                     @if (Auth::user()->role === \App\Enums\UserRole::USER)
                     <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                         {{ __('Dashboard') }}
@@ -46,15 +120,16 @@
                     <x-nav-link :href="route('nilai')" :active="request()->routeIs('nilai')">
                         {{ __('Nilai') }}
                     </x-nav-link>
+
+
                     @endif
-
-
 
 
                 </div>
 
 
             </div>
+
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
@@ -107,6 +182,18 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+                {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('formulir')" :active="request()->routeIs('formulir')">
+                {{ __('Formulir') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('user.berkas')" :active="request()->routeIs('user.berkas')">
+                {{ __('Berkas') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('nilai')" :active="request()->routeIs('nilai')">
+                {{ __('Nilai') }}
             </x-responsive-nav-link>
         </div>
 
