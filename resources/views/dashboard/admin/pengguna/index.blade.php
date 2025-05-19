@@ -28,7 +28,7 @@
                             <th class="px-4 py-2 border">Waktu Daftar</th>
                             <th class="px-4 py-2 border">Waktu Pembaharuan</th>
 
-                            <th class="px-4 py-2 border">Aksi</th>
+                            <th class="px-4 py-2 border" colspan="2">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,7 +42,10 @@
                             <td class="px-4 py-2 border text-center"><a href="{{ route('pengguna.edit', $row->id) }}" class="text-blue-500 mr-2">{{ $row->role }}</a></td>
                             <td class="px-4 py-2 border text-center">{{ $row->created_at->format('d M Y H:i') }}</td>
                             <td class="px-4 py-2 border text-center">{{ $row->updated_at->format('d M Y H:i') }}</td>
-                            <td class="px-4 py-2 border text-center"><a href="{{route('pengguna.edit',$row->id)}}"><x-secondary-button>Ubah</x-secondary-button></a></td>
+                            <td class="px-4 py-2 border text-center"><a href="{{route('pengguna.edit',$row->id)}}"><x-secondary-button><i data-feather="edit"></i></x-secondary-button></a></td>
+
+                            <td class="px-4 py-2 border text-center"><a href="{{ route('admin.users.editPassword', $row->id) }}" class="text-blue-600 underline">
+                                    <x-secondary-button><i data-feather="tool"></i></x-secondary-button></a></td>
                         </tr>
                         @endforeach
                     </tbody>

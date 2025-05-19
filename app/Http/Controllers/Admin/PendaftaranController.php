@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Pendaftars;
@@ -11,6 +12,12 @@ use App\Models\JalurPendaftaran;
 use App\Models\NilaiPendaftar;
 use App\Models\Mapel;
 use App\Models\PengaturanPpdb;
+use App\Models\User;
+
+
+use function Illuminate\Log\log;
+
+
 
 
 class PendaftaranController extends Controller
@@ -19,6 +26,9 @@ class PendaftaranController extends Controller
 
     {
         // Ambil data pendaftar milik user yang sedang login dan ikut sertakan relasi 'jalur'
+
+
+
         $data = Pendaftars::with(['jalur:id,nama_jalur'])
             ->where('user_id', Auth::id())
             ->first();
@@ -37,6 +47,10 @@ class PendaftaranController extends Controller
 
     public function store(Request $request)
     {
+
+
+
+
         // Cek apakah user sudah mendaftar
         $existing = Pendaftars::where('user_id', Auth::id())->first();
 
@@ -90,6 +104,9 @@ class PendaftaranController extends Controller
 
         // $pendaftar = Pendaftars::findOrFail($id);
 
+
+
+
         $pendaftar = Pendaftars::with('jalur', 'nilaiPendaftar', 'berkas')->findOrFail($id);
         if (Auth::id() !== $pendaftar->user_id) {
             abort(403, 'Unauthorized action.');
@@ -101,6 +118,25 @@ class PendaftaranController extends Controller
 
 
         $pdf = Pdf::loadView('dashboard.user.formulir.cetak', compact('pendaftar', 'atur', 'totalNilai', 'foto'));
+        return $pdf->stream('bukti-pendaftaran.pdf');
+    }
+    public function cetakAdmin($id)
+    {
+
+        // $pendaftar = Pendaftars::findOrFail($id);
+
+
+
+
+        $pendaftar = Pendaftars::with('jalur', 'nilaiPendaftar', 'berkas')->findOrFail($id);
+
+
+        $atur = PengaturanPpdb::first();
+        $totalNilai = $pendaftar->nilaiPendaftar->sum('nilai');
+        $foto = $pendaftar->berkas->firstWhere('jenis_berkas', 'foto'); // ambil foto
+
+
+        $pdf = Pdf::loadView('dashboard.admin.pendaftar.cetak', compact('pendaftar', 'atur', 'totalNilai', 'foto'));
         return $pdf->stream('bukti-pendaftaran.pdf');
     }
 
@@ -346,12 +382,17 @@ class PendaftaranController extends Controller
         $search = $request->input('search.value');
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);
-        $orderColumn = $request->input('order.0.column', 2); // default ke total_nilai
+        $orderColumn = $request->input('order.0.column', 2);
         $orderDir = $request->input('order.0.dir', 'desc');
 
         // Kolom urutan sesuai frontend
-        $columns = ['nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count'];
+        $columns = ['id', 'nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count'];
         $orderColumnName = $columns[$orderColumn] ?? 'total_nilai';
+
+
+
+        // default ke total_nilai (index ke-4 setelah 'id')
+
 
         // Query dasar
         $query = Pendaftars::with('jalur')
@@ -368,6 +409,11 @@ class PendaftaranController extends Controller
         }
 
         $recordsFiltered = $query->count();
+
+
+
+
+
 
         // Sorting
         if ($orderColumnName === 'jalur.nama_jalur') {
@@ -421,6 +467,9 @@ class PendaftaranController extends Controller
             </form>
               <a href="' . route('siswa.editnilai', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-red-700 rounded text-sm">
                 <i data-feather="edit" class="w-4 h-4 mr-1"></i>Nilai</a>
+                 <a href="' . route('admin.cetak', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-black hover:bg-red-700 rounded text-sm">
+                <i data-feather="edit" class="w-4 h-4 mr-1"></i>Cetak</a>
+                
         </div>',
             ];
         });

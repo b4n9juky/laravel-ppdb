@@ -2,7 +2,7 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <table id="pendaftar-table" class="table table-bordered">
+                <table id="pendaftar-table" class="table table-bordered w-full">
                     <thead>
                         <tr>
                             <th>Nomor</th>
@@ -10,7 +10,6 @@
                             <th>No Daftar</th>
                             <th>Jalur Pendaftaran</th>
                             <th>Total Nilai</th>
-
                             <th>Jenis Berkas</th>
                             <th>Status</th>
                             <th>Aksi</th>
@@ -20,14 +19,16 @@
             </div>
 
             <script>
+                // Setup CSRF token untuk AJAX agar tidak 403
+
+
                 $(function() {
                     $('#pendaftar-table').DataTable({
                         processing: true,
                         serverSide: true,
                         ajax: '{{ route("siswa.data") }}',
                         columns: [{
-
-                                data: null, // data null karena kita generate manual
+                                data: null,
                                 name: 'nomor',
                                 orderable: false,
                                 searchable: false,
@@ -36,27 +37,30 @@
                                 }
                             },
                             {
-                                data: 'nama'
+                                data: 'nama',
+                                name: 'nama'
                             },
                             {
-                                data: 'nomor_daftar'
+                                data: 'nomor_daftar',
+                                name: 'nomor_daftar'
                             },
                             {
-                                data: 'jalur'
+                                data: 'jalur',
+                                name: 'jalur'
                             },
                             {
                                 data: 'total_nilai',
+                                name: 'total_nilai',
                                 render: function(data) {
                                     let value = parseFloat(data) || 0;
                                     return `
-<div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                            <div class="h-4 bg-blue-500 text-white text-xs text-center leading-4" style="width: ${value}%; min-width: 2rem;">
-                              ${value}
-                            </div>
-                          </div>`;
+                                        <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                                            <div class="h-4 bg-blue-500 text-white text-xs text-center leading-4" style="width: ${value}%; min-width: 2rem;">
+                                                ${value}
+                                            </div>
+                                        </div>`;
                                 }
                             },
-
                             {
                                 data: 'jenis_berkas',
                                 name: 'jenis_berkas',
@@ -65,6 +69,7 @@
                             },
                             {
                                 data: 'status',
+                                name: 'status'
                             },
                             {
                                 data: 'action',
@@ -77,18 +82,16 @@
                             feather.replace(); // render ulang feather icons
                         },
                         createdRow: function(row, data) {
-                            if (parseFloat(data.total_nilai) >= 200) {
-                                $(row).addClass('bg-green-100'); // Hijau muda
-                            } else if (parseFloat(data.total_nilai) <= 100) {
-                                $(row).addClass('bg-red-100'); // Merah muda
+                            const nilai = parseFloat(data.total_nilai);
+                            if (nilai >= 200) {
+                                $(row).addClass('bg-green-100'); // hijau muda
+                            } else if (nilai <= 100) {
+                                $(row).addClass('bg-red-100'); // merah muda
                             }
                         }
-
                     });
-
                 });
             </script>
-
         </div>
     </div>
 </x-app-layout>
