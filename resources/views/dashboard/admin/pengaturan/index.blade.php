@@ -57,7 +57,7 @@
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Kop Surat Sekolah / Madrasah</label>
                             <input type="file" name="kop_surat"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Isi kop surat">
+                                placeholder="Isi kop surat" required>
                         </div>
                         <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Tanda Tangan Kepsek / Kamad</label>

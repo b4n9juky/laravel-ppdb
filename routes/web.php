@@ -23,7 +23,21 @@ use App\Http\Controllers\Admin\AdminUserController;
 //route buka tutup pendaftaran
 Route::get('/', [HomePpdbController::class, 'index']);
 Route::get('/welcome', [HomePpdbController::class, 'cekjadwal'])->name('masuk');
-Route::get('/2025', [HomePpdbController::class, 'loginAdmin'])->name('admin.login');
+Route::get(
+    '/login/{tanggal}',
+    function ($tanggal) {
+        if ($tanggal !== now()->format('Y-m-d')) {
+            abort(404);
+        }
+        return view('auth.login', ['tanggal' => $tanggal]);
+    }
+);
+
+
+// Route::get(
+//     '/2025',
+//     [HomePpdbController::class, 'loginAdmin']
+// )->name('admin.login');
 
 // Route::middleware('check.time')->group(function () {
 //     Route::get('/pendaftaran', [PendaftaranController::class, 'index']);
@@ -89,6 +103,10 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/pendaftar/diterima', [PendaftaranController::class, 'pendaftarDiterima'])->name('pendaftar.diterima');
     Route::get('/pendaftar/dataditerima', [PendaftaranController::class, 'dataDiterima'])->name('pendaftar.dataditerima');
 
+    // data tables user
+
+    Route::get('/admin/user', [PenggunaController::class, 'cariUser'])->name('admin.userdata');
+
     // validasi diterima
 
 });
@@ -142,6 +160,12 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/berkas', [BerkasPendaftarController::class, 'index'])->name('user.berkas');
     Route::post('/upload', [BerkasPendaftarController::class, 'upload'])->name('upload');
     Route::delete('/berkas/{id}', [BerkasPendaftarController::class, 'destroy'])->name('berkas.hapus');
+
+
+
+    //get mapel
+    Route::get('/user/getmapel', [NilaiPendaftarController::class, 'getMapel']);
+    Route::post('/user/setmapel', [NilaiPendaftarController::class, 'simpanData'])->name('nilai.simpan');
 });
 
 Route::middleware(['guest.redirect'])->group(function () {

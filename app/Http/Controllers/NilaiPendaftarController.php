@@ -9,6 +9,7 @@ use App\Models\Pendaftars;
 use App\Models\Mapel;
 use App\Models\BerkasPendaftar;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class NilaiPendaftarController extends Controller
 {
@@ -37,7 +38,9 @@ class NilaiPendaftarController extends Controller
             return back()->with('error', 'Dokumen wajib belum lengkap: ' . implode(', ', $kurang));
         } else {
             $nilai = $pendaftar->nilaiPendaftar()->with('mapel')->get();
-            return view('dashboard.user.nilai.index', compact('nilai'));
+            $mapel = Mapel::where('is_active', true)->get();
+
+            return view('dashboard.user.nilai.index', compact('nilai', 'mapel', 'pendaftar'));
         }
     }
 
@@ -46,6 +49,14 @@ class NilaiPendaftarController extends Controller
         $pendaftar = Pendaftars::where('user_id', Auth::id())->firstOrFail();
         $mapel = Mapel::where('is_active', true)->get();
         return view('dashboard.user.nilai.create', compact('mapel', 'pendaftar'));
+    }
+
+    public function getMapel()
+    {
+        $pendaftar = Pendaftars::where('user_id', Auth::id())->firstOrFail();
+        $mapel = Mapel::where('is_active', true)->get();
+
+        return view('dashboard.user.nilai.getMapel', compact('mapel', 'pendaftar'));
     }
 
     public function store(Request $request)
@@ -104,5 +115,50 @@ class NilaiPendaftarController extends Controller
         $nilai->delete();
 
         return back()->with('success', 'Nilai berhasil dihapus.');
+    }
+    public function simpanData(Request $request)
+    {
+
+        // Validasi input
+        $request->validate([
+            'pendaftar_id' => 'required|exists:pendaftars,id',
+            'mapel_id' => 'required|array',
+            'mapel_id.*' => 'required|exists:mapel,id',
+            'nilai' => 'required|array',
+            'nilai.*' => 'required|numeric|min:0|max:100',
+        ]);
+
+        $pendaftarId = $request->pendaftar_id;
+        $mapelIds = $request->mapel_id;
+        $nilaiArray = $request->nilai;
+
+        DB::beginTransaction();
+
+        try {
+            foreach ($mapelIds as $index => $mapelId) {
+                // Cek apakah nilai sudah ada
+                $exists = NilaiPendaftar::where('pendaftar_id', $pendaftarId)
+                    ->where('mapel_id', $mapelId)
+                    ->exists();
+
+                if ($exists) {
+                    DB::rollBack();
+                    return back()->withInput()->with('error', 'Nilai untuk mapel ID ' . $mapelId . ' sudah ada. Gunakan fitur edit nilai.');
+                }
+
+                // Simpan data nilai
+                NilaiPendaftar::create([
+                    'pendaftar_id' => $pendaftarId,
+                    'mapel_id' => $mapelId,
+                    'nilai' => $nilaiArray[$index],
+                ]);
+            }
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Nilai berhasil disimpan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
     }
 }

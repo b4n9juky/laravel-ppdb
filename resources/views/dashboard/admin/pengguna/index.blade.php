@@ -8,17 +8,9 @@
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            @if (session('success'))
-            <div class="mb-4 p-4 bg-green-100 text-green-800 rounded">
-                {{ session('success') }}
-            </div>
-            @endif
 
-            @if ($siswa->isEmpty())
-            <p class="text-gray-600"> Belum ada Pengguna</p>
-            @else
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <table class="min-w-full table-auto">
+                <table class="min-w-full table-auto" id="pengguna">
                     <thead>
                         <tr>
                             <th class="px-4 py-2 border">No</th>
@@ -32,30 +24,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($siswa as $row)
 
-                        <tr>
-                            <td class="px-4 py-2 border text-center">{{ $loop->iteration + ($siswa->currentPage() - 1) * $siswa->perPage()}}</td>
-                            <td class="px-4 py-2 border text-center">{{ $row->name }}</td>
-                            <td class="px-4 py-2 border text-center">{{ $row->email }}</td>
-
-                            <td class="px-4 py-2 border text-center"><a href="{{ route('pengguna.edit', $row->id) }}" class="text-blue-500 mr-2">{{ $row->role }}</a></td>
-                            <td class="px-4 py-2 border text-center">{{ $row->created_at->format('d M Y H:i') }}</td>
-                            <td class="px-4 py-2 border text-center">{{ $row->updated_at->format('d M Y H:i') }}</td>
-                            <td class="px-4 py-2 border text-center"><a href="{{route('pengguna.edit',$row->id)}}"><x-secondary-button><i data-feather="edit"></i></x-secondary-button></a></td>
-
-                            <td class="px-4 py-2 border text-center"><a href="{{ route('admin.users.editPassword', $row->id) }}" class="text-blue-600 underline">
-                                    <x-secondary-button><i data-feather="tool"></i></x-secondary-button></a></td>
-                        </tr>
-                        @endforeach
                     </tbody>
-                </table>
-            </div>
-            @endif
 
-            <div class="mt-6">
-                {{ $siswa->links() }}
+
             </div>
+
         </div>
     </div>
+
+    <script>
+        // Setup CSRF token untuk AJAX agar tidak 403
+
+
+        $(function() {
+            $('#pengguna').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("admin.userdata") }}',
+                columns: [{
+                        data: null,
+                        name: 'nomor',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'role',
+                        name: 'role'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        name: 'updated_at'
+
+                    }
+
+
+                ],
+                drawCallback: function() {
+                    feather.replace(); // render ulang feather icons
+                },
+
+            });
+        });
+    </script>
 </x-app-layout>

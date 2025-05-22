@@ -14,10 +14,11 @@ class PenggunaController extends Controller
     public function index()
     {
 
-        $siswa = User::where('role', 'user')->paginate(10);
+        // $siswa = User::where('role', 'user')->paginate(10);
         // $pengguna = $data->paginate(2);
 
-        return view('dashboard.admin.pengguna.index', compact('siswa'));
+
+        return view('dashboard.admin.pengguna.index');
     }
     public function edit($id)
     {
@@ -39,5 +40,58 @@ class PenggunaController extends Controller
         ]);
 
         return redirect()->route('pengguna.dashboard')->with('success', 'Data berhasil diperbarui.');
+    }
+    public function destroy($id) {}
+    public function cariUser(Request $request)
+    {
+        $search = $request->input('search.value');
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+        $orderColumn = $request->input('order.0.column', 3); // default ke total_nilai
+        $orderDir = $request->input('order.0.dir', 'desc');
+
+        // Kolom urutan sesuai frontend
+        $columns = ['id', 'name', 'email', 'role', 'created_at', 'updated_at'];
+        $orderColumnName = $columns[$orderColumn] ?? 'peran';
+
+        // Query utama
+        $query = User::query();
+
+        // Pencarian global
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
+            });
+        }
+
+        // Hitung jumlah setelah filter
+        $recordsFiltered = $query->count();
+
+        // // Sorting (hanya kolom model langsung, bukan relasi)
+        // if ($orderColumnName !== 'name') {
+        $query->orderBy($orderColumnName, $orderDir);
+        // }
+
+        // Ambil data
+        $data = $query->skip($start)->take($length)->get();
+
+        // Format untuk DataTables
+        $result = $data->map(function ($item) {
+            return [
+                'name' => $item->name,
+                'email' => $item->email,
+                'role' => $item->role,
+                'created_at' => $item->created_at,
+                'updated_at' => $item->updated_at,
+
+            ];
+        });
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => User::all()->count(),
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $result,
+        ]);
     }
 }

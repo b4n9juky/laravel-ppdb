@@ -59,14 +59,32 @@
                         </thead>
                         <tbody>
 
+
                             @foreach ($berkas as $docx)
                             <tr>
                                 <td class="px-4 py-2 border text-center">{{$loop->iteration}}</td>
                                 <td class="px-4 py-2 border text-center">{{$docx->jenis_berkas}}</td>
-                                <td class="px-4 py-2 border text-center"><a href="{{ asset('storage/' . $docx->file_path) }}" data-lightbox="galeri" data-title="{{ $docx->caption }}">
+                                <td class="px-4 py-2 border text-center">
+
+
+
+
+                                    @php
+                                    $ext = pathinfo($docx->file_path, PATHINFO_EXTENSION);
+                                    @endphp@if(in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp']))
+                                    <a href="{{ asset('storage/' . $docx->file_path) }}" data-lightbox="galeri" data-title="{{ $docx->caption }}">
                                         <img src="{{ asset('storage/' . $docx->file_path) }}" alt="Foto" class="rounded-lg shadow-md hover:scale-105 transition duration-300" width="100" height="100">
                                     </a>
+                                    @elseif(strtolower($ext) === 'pdf')
+                                    <iframe src="{{ asset('storage/' . $docx->file_path) }}" width="100px" height="100px">
+                                        File PDF tidak bisa ditampilkan.
+                                    </iframe>
+                                    <p><a href="{{ asset('storage/' . $docx->file_path) }}" target="_blank">Lihat / Unduh PDF</a></p>
+                                    @else
+                                    <p><a href="{{ asset('storage/' . docx->file_path) }}" target="_blank">Download File</a></p>
+                                    @endif
                                 </td>
+
                                 <td class="px-4 py-2 border text-center">{{$docx->created_at}}</td>
                                 <td class="px-4 py-2 border text-center">{{$docx->updated_at}}</td>
                                 <form action="{{route('berkas.hapus',$docx->id)}}" method="post">

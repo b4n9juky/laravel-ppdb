@@ -15,19 +15,50 @@
                         <div class="bg-red-800 text-white text-xl mt-5 mb-4 sm:rounded-lg px-2 py-2">
                             <x-danger-button><i data-feather="alert-triangle"></i>
                                 Anda belum menyelesaikan Pendaftaran, Isi Nilai terlebih dahulu</x-danger-button>
-                            <x-primary-button><i data-feather="edit"></i>
-                                <a href="{{ route('nilai.create') }}">Input Nilai</a></x-primary-button>
+
                         </div>
                         @else
                         <div class="bg-green-600 text-white text-xl mt-5 mb-4 sm:rounded-lg px-2 py-2">
-                            <p>Pendaftaran Berhasil, SIlahkan Ke Sekolah Untuk Mencetak Bukti Pendaftaran</p>
+                            <p>Pendaftaran Berhasil, Harap Datang Ke Sekolah Untuk Mencetak Bukti Pendaftaran</p>
                         </div>
 
                         @endif
                     </div>
-                    @if(session('success'))
-                    <div class=" text-green-600 mb-4">{{ session('success') }}</div>
-                    @endif
+
+
+                    <!-- input nilai -->
+                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                            <div class="p-6 text-gray-900">
+
+                                <form action="{{ route('nilai.simpan') }}" method="POST">
+                                    @csrf
+
+
+
+                                    <table class="max-w-full table-auto">
+                                        @foreach($mapel as $m)
+                                        <tr>
+                                            <td>{{ $m->nama_mapel }}</td>
+                                            <td><input type="hidden" name="pendaftar_id" value="{{ $pendaftar->id }}"></td>
+                                            <td></td>
+                                            <td><input type="hidden" name="mapel_id[]" value="{{ $m->id }}"></td>
+                                            <td><input type="number" name="nilai[]" required></td>
+                                        </tr>
+                                        @endforeach
+                                        <tr>
+                                            <td colspan="2">
+                                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- menampilkan data hasil inputan nilai -->
+
 
                     <div class="overflow-auto">
                         <table class="w-full text-sm text-left text-gray-700">

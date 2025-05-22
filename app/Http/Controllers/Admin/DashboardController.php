@@ -10,6 +10,7 @@ use App\Models\Mapel;
 use App\Models\JalurPendaftaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 
 
 class DashboardController extends Controller
@@ -18,15 +19,35 @@ class DashboardController extends Controller
     {
 
         $jumlahPendaftar = Pendaftars::count();
-        $kuotaPerJalur = JalurPendaftaran::select('nama_jalur', 'kuota')->get();
+        $kuotaPerJalur = JalurPendaftaran::select('id', 'kuota')->get();
+
+        $pendaftarPerJalur = Pendaftars::select('jalur_pendaftarans.nama_jalur', DB::raw('count(*) as total'))
+            ->join('jalur_pendaftarans', 'pendaftars.jalurdaftar_id', '=', 'jalur_pendaftarans.id')
+            ->groupBy('jalur_pendaftarans.nama_jalur')
+            ->get();
 
 
-        $jalurs = JalurPendaftaran::withCount('jalurdaftar')->get();
+        $jalurs = JalurPendaftaran::withCount('jalur')->get();
+
 
         // Tambahkan kolom sisa kuota
         foreach ($jalurs as $jalur) {
-            $jalur->sisa_kuota = $jalur->kuota - $jalur->jalurdaftar_count;
+            $jalur->sisa_kuota = $jalur->kuota - $jalur->jalur_count;
         }
-        return view('dashboard.admin.dashboard', compact('kuotaPerJalur', 'jumlahPendaftar', 'jalurs'));
+        return view('dashboard.admin.dashboard', compact(
+            'kuotaPerJalur',
+            'jumlahPendaftar',
+            'pendaftarPerJalur',
+            'jalurs'
+        ));
+    }
+    public function dashboard()
+    {
+        // Ambil data pendaftar per jalur
+        $pendaftarPerJalur = Pendaftars::select('jalurdaftar_id', DB::raw('count(*) as total'))
+            ->groupBy('jalurdaftar_id')
+            ->get();
+
+        return view('admin.dashboard', compact('pendaftarPerJalur'));
     }
 }

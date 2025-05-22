@@ -20,6 +20,9 @@
                     <x-nav-link :href="route('admin.datasiswa')" :active="request()->routeIs('admin.datasiswa')">
                         {{ __('Data Pendaftar') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('pendaftar.diterima')" :active="request()->routeIs('pendaftar.diterima')">
+                        {{ __('Data Diterima') }}
+                    </x-nav-link>
                     <x-nav-link :href="route('pengguna.dashboard')" :active="request()->routeIs('pengguna.dashboard')">
                         {{ __('Data Pengguna') }}
                     </x-nav-link>
@@ -108,7 +111,15 @@
             <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('user.berkas')" :active="request()->routeIs('user.berkas')">
+                {{ __('Berkas') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('nilai')" :active="request()->routeIs('nilai')">
+                {{ __('Nilai') }}
+            </x-responsive-nav-link>
         </div>
+
+
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
