@@ -83,7 +83,17 @@ class PenggunaController extends Controller
                 'role' => $item->role,
                 'created_at' => $item->created_at,
                 'updated_at' => $item->updated_at,
-
+                'action' => '
+        <div class="flex space-x-2">
+            <a href="' . route('admin.users.editPassword', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-red-700 rounded text-sm">
+                <i data-feather="refresh-cw" class="w-4 h-4 mr-1"></i> Reset</a>
+               
+                <form action="' . route('pendaftar.batal', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin membatalkan?\')">
+                ' . csrf_field() . '<button type="submit" class="inline-flex items-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm">
+                <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>Hapus</button>
+            </form>
+                
+        </div>',
             ];
         });
 

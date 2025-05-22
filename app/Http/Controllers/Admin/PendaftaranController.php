@@ -436,10 +436,18 @@ class PendaftaranController extends Controller
                 // 'jumlah_berkas' => $item->berkas_count,
                 'jenis_berkas' => collect($item->berkas)->map(function ($berkas) use ($item) {
                     $url = asset('storage/' . $berkas->file_path);
-                    return '<a href="' . $url . '" data-lightbox="berkas-' . $item->id . '" data-title="' . e($berkas->jenis_berkas) . '">
+                    $ext = pathinfo($berkas->file_path, PATHINFO_EXTENSION);
+                    if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'])) {
+                        return '<a href="' . $url . '" data-lightbox="berkas-' . $item->id . '" data-title="' . e($berkas->jenis_berkas) . '">
         <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
-                        . e($berkas->jenis_berkas) . '</span>
+                            . e($berkas->jenis_berkas) . '</span>
     </a>';
+                    } elseif (strtolower($ext) === 'pdf') {
+                        return '<a href="' . $url . '" target="_blank"> <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
+                            . e($berkas->jenis_berkas) . '</span></a>';
+                    } else {
+                        return '<a href="' . $url . '" target="_blank">Download File</a>';
+                    }
                 })->implode(''),
                 'status' => match ($item->status) {
                     'Diterima' => '<span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm rounded">
@@ -543,11 +551,28 @@ class PendaftaranController extends Controller
                 'jalur' => $item->jalur->nama_jalur ?? '-',
                 'total_nilai' => $item->total_nilai ?? 0,
                 'jenis_berkas' => collect($item->berkas)->map(function ($berkas) use ($item) {
+
+
+
+
+
+
+
+
+
                     $url = asset('storage/' . $berkas->file_path);
-                    return '<a href="' . $url . '" data-lightbox="berkas-' . $item->id . '" data-title="' . e($berkas->jenis_berkas) . '">
-                    <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
-                        . e($berkas->jenis_berkas) . '</span>
-                </a>';
+                    $ext = pathinfo($berkas->file_path, PATHINFO_EXTENSION);
+                    if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'])) {
+                        return '<a href="' . $url . '" data-lightbox="berkas-' . $item->id . '" data-title="' . e($berkas->jenis_berkas) . '">
+        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
+                            . e($berkas->jenis_berkas) . '</span>
+    </a>';
+                    } elseif (strtolower($ext) === 'pdf') {
+                        return '<a href="' . $url . '" target="_blank"> <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
+                            . e($berkas->jenis_berkas) . '</span></a>';
+                    } else {
+                        return '<a href="' . $url . '" target="_blank">Download File</a>';
+                    }
                 })->implode(''),
                 'status' => match ($item->status) {
                     'Diterima' => '<span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm rounded">
