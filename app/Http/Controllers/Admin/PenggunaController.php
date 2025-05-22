@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Illuminate\Support\Carbon;
+
 
 
 class PenggunaController extends Controller
@@ -81,8 +83,8 @@ class PenggunaController extends Controller
                 'name' => $item->name,
                 'email' => $item->email,
                 'role' => $item->role,
-                'created_at' => $item->created_at,
-                'updated_at' => $item->updated_at,
+                'created_at' => Carbon::parse($item->created_at)->format('d-m-Y H:i:s'),
+                'updated_at' => Carbon::parse($item->updated_at)->format('d-m-Y H:i:s'),
                 'action' => '
         <div class="flex space-x-2">
             <a href="' . route('admin.users.editPassword', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-red-700 rounded text-sm">
