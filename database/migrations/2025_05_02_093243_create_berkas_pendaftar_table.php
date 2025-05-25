@@ -12,7 +12,7 @@ class CreateBerkasPendaftarTable extends Migration
     {
         Schema::create('berkas_pendaftar', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('pendaftar_id')->constrained()->onDelete('cascade');
+            $table->foreignId('pendaftar_id')->constrained('pendaftars')->onDelete('cascade');
             $table->string('jenis_berkas'); // contoh: kk, akta, foto
             $table->string('file_path');
             $table->timestamps();

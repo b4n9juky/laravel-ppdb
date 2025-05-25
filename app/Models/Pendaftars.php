@@ -16,7 +16,7 @@ class Pendaftars extends Model
         'sekolah_asal',
         'alamat',
         'no_hp',
-        'jalurdaftar_id',
+        'jalur_pendaftaran_id',
         'status',
         'user_id'
     ];
@@ -37,7 +37,7 @@ class Pendaftars extends Model
     }
     public function jalur()
     {
-        return $this->belongsTo(JalurPendaftaran::class, 'jalurdaftar_id');
+        return $this->belongsTo(JalurPendaftaran::class, 'jalur_pendaftaran_id');
     }
     public function formulirTerisi()
     {
@@ -49,7 +49,7 @@ class Pendaftars extends Model
             $this->alamat &&
             $this->sekolah_asal &&
             $this->no_hp &&
-            $this->jalurdaftar_id;
+            $this->jalur_pendaftaran_id;
     }
     public function isLengkap()
     {

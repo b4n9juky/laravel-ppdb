@@ -10,7 +10,7 @@ class JalurPendaftaran extends Model
     protected $fillable = ['nama_jalur', 'kuota', 'is_active', 'created_at', 'updated_at'];
     public function jalur()
     {
-        return $this->hasMany(Pendaftars::class, 'jalurdaftar_id');
+        return $this->hasMany(Pendaftars::class, 'jalur_pendaftaran_id');
     }
     public function jadwal()
     {

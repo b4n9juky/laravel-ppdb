@@ -9,51 +9,66 @@
     <div class="container mx-auto px-4 py-6">
         <h1 class="text-3xl font-bold mb-6">Admin Dashboard</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Card 1: Users -->
-            <div class="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700">Total Pendaftar</h2>
-                <p class="text-3xl font-bold text-blue-600 mt-2">
-                    {{ $jumlahPendaftar }}
-                </p>
-            </div>
-            <div class="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-700">Total Users</h2>
-                <p class="text-3xl font-bold text-blue-600 mt-2">
-                <table class="w-full text-sm text-left text-gray-700">
-                    <thead class="bg-gray-200 text-xs uppercase">
-                        <tr>
-                            <th class="px-4 py-2">Jalur</th>
-                            <th class="px-4 py-2">Kuota</th>
-                            <th class="px-4 py-2">Terisi</th>
-                            <th class="px-4 py-2">Sisa</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($jalurs as $jalur)
-                        <tr class="bg-white border-b hover:bg-gray-100">
-                            <td class="px-4 py-2">{{ $jalur->nama_jalur }}</td>
-                            <td class="px-4 py-2">{{ $jalur->kuota }}</td>
-                            <td class="px-4 py-2">{{ $jalur->jalur_count }}</td>
-                            <td class="px-4 py-2">{{ $jalur->sisa_kuota }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
 
-                </p>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            @php
+            $colors = ['bg-sky-500','bg-green-500','bg-yellow-500','bg-red-500','bg-teal-500','bg-violet-500'];
+            $icons = ['shopping-bag','bar-chart-2','user-plus','book-open','users','book'];
+            @endphp
 
+            @foreach($jalurs as $index => $jalur)
+            <x-dashboard-card
+                value="{{ $jalur->nama_jalur }}"
+                text="{{ $jalur->jalur_count }} Pendaftar"
+                label="{{ $jalur->sisa_kuota}} Kuota"
+                color="{{ $colors[$index % count($colors)] }}"
+                icon="{{ $icons[$index % count($icons)] }}" />
+
+            @endforeach
+
+        </div>
+
+    </div>
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
 
             <div class="bg-white shadow rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Statistik Pendaftar per Jalur</h2>
                 <canvas id="jalurChart" class="w-full h-64"></canvas>
 
             </div>
+            <!-- // menampilkan 10 user terbaru -->
+            <div class="bg-white shadow rounded-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-700 mb-4">10 Pendaftar Terbaru</h2>
+                <table class="table-auto w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-2">Nama</th>
+                            <th class="px-4 py-2">Email</th>
+                            <th class="px-4 py-2">Tanggal Daftar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($latestUsers as $user)
+                        <tr>
+                            <td class="border px-4 py-2">{{ $user->name }}</td>
+                            <td class="border px-4 py-2">{{ $user->email }}</td>
+                            <td class="border px-4 py-2">{{ $user->created_at->format('d M Y H:i') }}</td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="text-center py-2">Belum ada pendaftar.</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+            </div>
         </div>
-
-
     </div>
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const jalurLabels = @json($pendaftarPerJalur-> pluck('nama_jalur'));

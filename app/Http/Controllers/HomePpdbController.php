@@ -16,7 +16,7 @@ class HomePpdbController extends Controller
         return view('beranda');
     }
 
-    public function cekjadwal()
+    public function cekjadwal(Request $request)
     {
         $pengaturan = PengaturanPpdb::select('id', 'dibuka', 'ditutup')->first();
 
@@ -24,20 +24,38 @@ class HomePpdbController extends Controller
             // return view('beranda')->with('error', 'Pengaturan belum tersedia');
             return back()->with('warning', 'Pengaturan Belum Tersedua.');
         }
+        if ($request->aksi === 'register') {
 
-        $now = Carbon::now();
+            $now = Carbon::now();
 
-        if ($now->lt($pengaturan->dibuka)) {
-            // return view('beranda')->with('error', 'Pendaftaran belum dibuka');
-            return back()->with('warning', 'Pendaftaran Belum dibuka.');
+            if ($now->lt($pengaturan->dibuka)) {
+                // return view('beranda')->with('error', 'Pendaftaran belum dibuka');
+                return back()->with('warning', 'Pendaftaran Belum dibuka.');
+            }
+
+            if ($now->gt($pengaturan->ditutup)) {
+                // return view('beranda')->with('error', 'Pendaftaran telah ditutup');
+                return back()->with('warning', 'Pendaftaran telah ditutup ..');
+            }
+
+            return redirect()->route('register');
         }
+        if ($request->aksi === 'login') {
 
-        if ($now->gt($pengaturan->ditutup)) {
-            // return view('beranda')->with('error', 'Pendaftaran telah ditutup');
-            return back()->with('warning', 'Pendaftaran telah ditutup ..');
+            $now = Carbon::now();
+
+            if ($now->lt($pengaturan->dibuka)) {
+                // return view('beranda')->with('error', 'Pendaftaran belum dibuka');
+                return back()->with('warning', 'Pendaftaran Belum dibuka.');
+            }
+
+            if ($now->gt($pengaturan->ditutup)) {
+                // return view('beranda')->with('error', 'Pendaftaran telah ditutup');
+                return back()->with('warning', 'Pendaftaran telah ditutup ..');
+            }
+
+            return redirect()->route('login');
         }
-
-        return redirect()->route('login');
     }
     public function loginAdmin()
     {

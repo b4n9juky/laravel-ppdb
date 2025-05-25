@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mapel', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama_mapel');
-            $table->timestamps();
+        Schema::table('pengaturan_ppdb', function (Blueprint $table) {
+            $table->dateTime('tanggal_pengumuman')->nullable();
         });
     }
 
@@ -23,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mapel');
+        Schema::table('pengaturan_ppdb', function (Blueprint $table) {
+            $table->dateTime('tanggal_pengumuman');
+        });
     }
 };

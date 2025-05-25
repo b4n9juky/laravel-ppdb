@@ -15,6 +15,10 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
+    <!-- datatables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
 
     <!-- Styles / Scripts -->
     @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
@@ -1556,95 +1560,30 @@
         </div>
     </header>
 
-    <!-- ✅ Hero Section -->
-    <!-- <section class="bg-white-600 text-black py-20">
-        <div class="max-w-4xl mx-auto text-center px-4">
-            <h1 class="text-4xl sm:text-5xl font-bold mb-4">Penerimaan Peserta Didik Baru</h1>
-            <img src="{{ asset('storage/siswa_madrasah.png') }}">
-            <p class="text-lg sm:text-xl mb-6">MAN BONTANG Tahun Ajaran 2025/2026 telah dibuka! Segera daftarkan dirimu dan raih masa depan gemilang bersama kami.</p>
-            <a href="#alur" class="bg-white text-blue-600 font-semibold px-6 py-3 rounded shadow hover:bg-gray-100 transition">Lihat Alur Pendaftaran</a>
-        </div>
-    </section> -->
 
-    <section class="relative bg-cover bg-center bg-no-repeat h-screen" style="background-image: url('{{ asset('storage/siswa_madrasah.jpeg') }}')">
-        <div class="absolute inset-0 bg-black/60"></div> <!-- Overlay hitam transparan -->
-
-        <div class="relative z-10 flex items-center justify-center h-full text-center px-4">
-            <div>
-                <h1 class="text-2xl md:text-4xl font-bold text-white mb-4">Panitia Penerimaan Siswa Didik Baru (PPDB)</h1>
-                <p class="text-lg md:text-xl text-white mb-6">Tahun Pelajaran 2025 / 2026</p>
-                <a href="{{route('masuk',['aksi'=>'register'])}}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-                    Daftar Sekarang
-                </a>
-                @if (Auth::check() && Auth::user()->role === UserRole::USER)
-                <a
-                    href="{{ url('/user/dashboard') }}"
-                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-                    Dashboard
-                </a>
-                @else
-                <a
-                    <a href="{{route('masuk',['aksi'=>'login'])}}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300">
-                    Login
-                </a>
-                </a>
-                @endif
-
-
-            </div>
-        </div>
-    </section>
 
 
     <section class="py-20 bg-green-50">
         <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold mb-12 text-center text-green-700">ℹ️ Informasi PPDB 2025</h2>
+            <h2 class="text-3xl font-bold mb-12 text-center text-green-700">ℹ️ Pengumuman PPDB {{date('Y')}}</h2>
 
-            <div class="grid gap-8 md:grid-cols-3">
 
-                <!-- 🗓️ Jadwal PPDB Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-green-600">
-                    <h3 class="text-xl font-semibold mb-4 text-green-600">🗓️ Jadwal PPDB</h3>
-                    <ul class="text-gray-700 space-y-2">
-                        <li><strong>1 - 30 Juni 2025:</strong> Pendaftaran Online</li>
-                        <li><strong>5 Juli 2025:</strong> Pengumuman Hasil Seleksi</li>
-                        <li><strong>10 - 15 Juli 2025:</strong> Daftar Ulang</li>
-                        <li><strong>18 Juli 2025:</strong> Awal Tahun Ajaran Baru</li>
-                    </ul>
-                </div>
+            <table id="tabel-pengumuman" class="w-full text-left">
+                <thead>
+                    <th>No</th>
+                    <th>Nomor Pendaftaran</th>
+                    <th>Nama</th>
+                    <th>JalurPendaftaran</th>
+                    <th>Status</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
 
-                <!-- 📋 Syarat Pendaftaran Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-green-600">
-                    <h3 class="text-xl font-semibold mb-4 text-green-600">📋 Syarat Pendaftaran</h3>
-                    <ul class="text-gray-700 list-disc list-inside space-y-2">
-                        <li>Scan Akta Kelahiran & Kartu Keluarga</li>
-                        <li>Scan Ijazah SMP Sederajat atau Surat Keterangan Lulus</li>
-                        <li>Pas Foto ukuran 3x4</li>
-                        <li>Mengisi Formulir Pendaftaran Online</li>
-                    </ul>
-                </div>
 
-                <!-- 🔄 Alur Pendaftaran Card -->
-                <div class="bg-white rounded-lg shadow-lg p-6 border-t-4 border-green-600">
-                    <h3 class="text-xl font-semibold mb-4 text-green-600">🔄 Alur Pendaftaran</h3>
-                    <ol class="text-gray-700 list-decimal list-inside space-y-2">
-                        <li>Kunjungi Website Resmi PPDB</li>
-                        <li>Membuat Akun</li>
-                        <li>Isi dan lengkapi formulir online</li>
-                        <li>Unggah dokumen persyaratan</li>
-                        <li>Isi Nilai Rapor</li>
-                        <li>Cetak Bukti Pendaftaran</li>
-                        <li>Mengikuti Tes Masuk</li>
-                        <li>Lakukan daftar ulang jika diterima</li>
-                    </ol>
-                </div>
 
-            </div>
         </div>
     </section>
-
-
-
     <!-- ✅ Kontak Section -->
     <section id="kontak" class="py-16 bg-white">
         <div class="max-w-4xl mx-auto px-4 text-center">
@@ -1662,6 +1601,8 @@
     </section>
 
 
+
+
     <!-- ✅ Footer -->
     <footer class="bg-green-600 text-white text-center py-6 mt-10">
         <div class="text-sm">© 2025 MAN BONTANG. All rights reserved.</div>
@@ -1675,54 +1616,52 @@
             mobileMenu.classList.toggle('hidden');
         });
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.4/js/lightbox.min.js"></script>
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- SweetAlert2 Flash Message -->
-    @if (session('success'))
+
+
     <script>
-        Swal.fire({
-            icon: 'success',
-            title: 'Berhasil',
-            text: '{{session("success")}}',
-            confirmButtonText: 'OK'
+        // Setup CSRF token untuk AJAX agar tidak 403
+
+
+        $(function() {
+            $('#tabel-pengumuman').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ route("pengumuman.diterima") }}',
+                columns: [{
+                        data: null,
+                        name: 'nomor',
+                        orderable: false,
+                        searchable: false,
+                        render: function(data, type, row, meta) {
+                            return meta.row + meta.settings._iDisplayStart + 1;
+                        }
+                    },
+                    {
+                        data: 'nodaftar',
+                        name: 'nodaftar'
+                    },
+                    {
+                        data: 'nama',
+                        name: 'nama'
+                    },
+
+                    {
+                        data: 'jalur',
+                        name: 'jalur'
+                    },
+
+                    {
+                        data: 'status',
+                        name: 'status'
+
+                    }
+
+                ],
+
+            });
         });
     </script>
-    @endif
-
-    @if (session('error'))
-    <script>
-        Swal.fire({
-            icon: 'error',
-            title: 'Oops!',
-            text: '{{ session("error") }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-    @endif
-
-    @if (session('warning'))
-    <script>
-        Swal.fire({
-            icon: 'warning',
-            title: 'Perhatian',
-            text: '{{ session("warning") }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-    @endif
-
-    @if (session('info'))
-    <script>
-        Swal.fire({
-            icon: 'info',
-            title: 'Info',
-            text: '{{ session("info") }}',
-            confirmButtonText: 'OK'
-        });
-    </script>
-    @endif
 
 </body>
 

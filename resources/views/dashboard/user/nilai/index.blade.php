@@ -27,36 +27,38 @@
 
 
                     <!-- input nilai -->
-                    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                            <div class="p-6 text-gray-900">
+                    <div class="overflow-auto">
 
-                                <form action="{{ route('nilai.simpan') }}" method="POST">
-                                    @csrf
+                        <form action="{{ route('nilai.simpan') }}" method="POST">
+                            @csrf
 
 
 
-                                    <table class="max-w-full table-auto">
-                                        @foreach($mapel as $m)
-                                        <tr>
-                                            <td>{{ $m->nama_mapel }}</td>
-                                            <td><input type="hidden" name="pendaftar_id" value="{{ $pendaftar->id }}"></td>
-                                            <td></td>
-                                            <td><input type="hidden" name="mapel_id[]" value="{{ $m->id }}"></td>
-                                            <td><input type="number" name="nilai[]" required></td>
-                                        </tr>
-                                        @endforeach
-                                        <tr>
-                                            <td colspan="2">
-                                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Simpan</button>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </form>
+                            <table class="w-full text-sm text-left text-gray-700">
+                                <tr>
+                                    <td colspan="2" class="border px-2 py-2 text-xs font-medium text-gray-500 uppercase bg-gray-100">input nilai</td>
+                                </tr>
+                                @foreach($mapel as $m)
+                                <input type="hidden" name="pendaftar_id" value="{{ $pendaftar->id }}">
+                                <input type="hidden" name="mapel_id[]" value="{{ $m->id }}">
+                                <tr>
+                                    <td class="border px-2 py-2 whitespace-nowrap text-black-600">{{ $m->nama_mapel }}</td>
 
+                                    <td class="border px-2 py-2 whitespace-nowrap text-black-600"><x-text-input type="number" name="nilai[]" placeholder="Masukkan Nilai berupa angka" required></x-text-input></td>
+                                </tr>
+                                @endforeach
+
+
+
+                            </table>
+                            <div class="mb-5 mt-5">
+                                <x-secondary-button type="submit">Simpan</x-secondary-button>
                             </div>
-                        </div>
+                        </form>
+
                     </div>
+
+
                     <!-- menampilkan data hasil inputan nilai -->
 
 
@@ -95,4 +97,5 @@
 
             </div>
         </div>
+    </div>
 </x-app-layout>

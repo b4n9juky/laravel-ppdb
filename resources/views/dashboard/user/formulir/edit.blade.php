@@ -94,25 +94,13 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value="{{$data->no_hp}}">
                         </div>
-                        <!-- <div class="mb-4">
-                            <label for="nama" class="block text-gray-700 font-semibold mb-2">Jalur Pendaftaran</label>
-                            <select name="jalur_pendaftaran" id=""
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="reguler">Reguler</option>
-                                <option value="afirmasi">Afirmasi</option>
-                                <option value="prestasi">Prestasi</option>
-                                <option value="luar kota">Luar Kota</option>
-                                <option value="anakguru">Anak Guru</option>
-                                <option value="tahfidz">Tahfidz</option>
-                            </select>
-                        </div> -->
 
                         <div class="mb-4">
                             <label for="jalurdaftar_id" class="block font-medium text-sm text-gray-700">Jalur Pendaftaran</label>
                             <select name="jalurdaftar" id="jalurdaftar_id" class="form-select rounded mt-1 block w-full">
                                 @foreach($jalur as $item)
                                 <option value="{{ $item->id }}"
-                                    {{ $data->jalurdaftar_id == $item->id ? 'selected' : '' }}>
+                                    {{ $data->jalur_pendaftaran_id== $item->id ? 'selected' : '' }}>
                                     {{ $item->nama_jalur }}
                                 </option>
                                 @endforeach
@@ -132,7 +120,7 @@
             </div>
 
             </button>
-
+            <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
             <script>
                 $(function() {
                     $("#tanggal_lahir").datepicker({

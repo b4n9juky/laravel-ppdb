@@ -13,6 +13,10 @@ use App\Models\NilaiPendaftar;
 use App\Models\Mapel;
 use App\Models\PengaturanPpdb;
 use App\Models\User;
+use App\Exports\DataExport; // Import export class
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\SemuaJalurExport;
+
 
 
 use function Illuminate\Log\log;
@@ -81,7 +85,7 @@ class PendaftaranController extends Controller
             'sekolah_asal' => $request->sekolah_asal,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-            'jalurdaftar_id' => $request->jalurdaftar,
+            'jalur_pendaftaran_id' => $request->jalurdaftar,
             'status' => 'menunggu',
             'user_id' => Auth::id()
 
@@ -101,10 +105,6 @@ class PendaftaranController extends Controller
     }
     public function cetak($id)
     {
-
-        // $pendaftar = Pendaftars::findOrFail($id);
-
-
 
 
         $pendaftar = Pendaftars::with('jalur', 'nilaiPendaftar', 'berkas')->findOrFail($id);
@@ -168,7 +168,7 @@ class PendaftaranController extends Controller
             'sekolah_asal' => $request->sekolah_asal,
             'alamat' => $request->alamat,
             'no_hp' => $request->no_hp,
-            'jalurdaftar_id' => $request->jalurdaftar,
+            'jalur_pendaftaran_id' => $request->jalurdaftar,
             'status' => $request->status,
         ]);
 
@@ -324,7 +324,7 @@ class PendaftaranController extends Controller
 
 
             // Hitung jumlah yang sudah diterima pada jalur yang sama
-            $jumlahDiterima = Pendaftars::where('jalurdaftar_id', $jalur->id)
+            $jumlahDiterima = Pendaftars::where('jalur_pendaftaran_id', $jalur->id)
                 ->where('status', 'diterima')
                 ->count();
 
@@ -361,7 +361,7 @@ class PendaftaranController extends Controller
         $siswa = Pendaftars::with('nilaiPendaftar', 'berkas', 'jalur')
             ->withSum('nilaiPendaftar as total_nilai', 'nilai')
             ->withCount('berkas')
-            ->where('jalurdaftar_id', $jalur_id)
+            ->where('jalur_pendaftaran_id', $jalur_id)
             ->orderByDesc('total_nilai')
             ->paginate(10);
 
@@ -449,36 +449,10 @@ class PendaftaranController extends Controller
                         return '<a href="' . $url . '" target="_blank">Download File</a>';
                     }
                 })->implode(''),
-                'status' => match ($item->status) {
-                    'Diterima' => '<span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm rounded">
-                <i data-feather="check-circle" class="w-4 h-4 mr-1"></i> Diterima
-            </span>',
-                    'Cadangan' => '<span class="inline-flex items-center px-2 py-1 bg-yellow-100 text-yellow-800 text-sm rounded">
-                <i data-feather="clock" class="w-4 h-4 mr-1"></i> Cadangan
-            </span>',
-                    'Ditolak' => '<span class="inline-flex items-center px-2 py-1 bg-red-100 text-red-700 text-sm rounded">
-                <i data-feather="x-circle" class="w-4 h-4 mr-1"></i> Ditolak
-            </span>',
-                    'Menunggu' => '<span class="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
-                <i data-feather="help-circle" class="w-4 h-4 mr-1"></i> Menunggu
-            </span>',
-                },
-                'action' => '
-        <div class="flex space-x-2">
-            <form action="' . route('pendaftar.approve', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin memproses?\')">
-                ' . csrf_field() . '<button class="inline-flex items-center px-2 py-1 text-white bg-green-600 hover:bg-green-700 rounded text-sm">
-                <i data-feather="check" class="w-4 h-4 mr-1"></i> Approve</button>
-            </form>
-            <form action="' . route('pendaftar.batal', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin membatalkan?\')">
-                ' . csrf_field() . '<button type="submit" class="inline-flex items-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm">
-                <i data-feather="trash-2" class="w-4 h-4 mr-1"></i>Batal</button>
-            </form>
-              <a href="' . route('siswa.editnilai', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-red-700 rounded text-sm">
-                <i data-feather="edit" class="w-4 h-4 mr-1"></i>Nilai</a>
-                 <a href="' . route('admin.cetak', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-black hover:bg-red-700 rounded text-sm">
-                <i data-feather="edit" class="w-4 h-4 mr-1"></i>Cetak</a>
-                
-        </div>',
+                'status' => view('dashboard.admin.pendaftar.partials.status', [
+                    'status' => $item->status
+                ])->render(),
+                'action' => view('dashboard.admin.pendaftar.partials.actions', ['item' => $item])->render(),
             ];
         });
 
@@ -552,14 +526,6 @@ class PendaftaranController extends Controller
                 'total_nilai' => $item->total_nilai ?? 0,
                 'jenis_berkas' => collect($item->berkas)->map(function ($berkas) use ($item) {
 
-
-
-
-
-
-
-
-
                     $url = asset('storage/' . $berkas->file_path);
                     $ext = pathinfo($berkas->file_path, PATHINFO_EXTENSION);
                     if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'])) {
@@ -606,5 +572,72 @@ class PendaftaranController extends Controller
             'recordsFiltered' => $recordsFiltered,
             'data' => $result,
         ]);
+    }
+    public function pengumuman()
+    {
+        $waktu_pengumuman = PengaturanPpdb::select('tanggal_pengumuman')->first();
+        echo $waktu_pengumuman->tanggal_pengumuman;
+
+        return view('pengumuman');
+    }
+    public function pengumumanDiterima(Request $request)
+    {
+        $search = $request->input('search.value');
+        $start = $request->input('start', 0);
+        $length = $request->input('length', 10);
+        $orderColumn = $request->input('order.0.column', 1); // default ke total_nilai
+        $orderDir = $request->input('order.0.dir', 'desc');
+
+        // Kolom urutan sesuai frontend
+        $columns = ['id', 'nodaftar', 'nama',  'jalur.nama_jalur', 'status'];
+        $orderColumnName = $columns[$orderColumn] ?? 'nodaftar';
+
+        // Query utama
+        $query = Pendaftars::with('jalur')->where('status',  'diterima');
+
+        // Pencarian global
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('nama_lengkap', 'like', "%{$search}%")
+                    ->orWhereHas('jalur', fn($q2) => $q2->where('nama_jalur', 'like', "%{$search}%"));
+            });
+        }
+
+        // Hitung jumlah setelah filter
+        $recordsFiltered = $query->count();
+
+        // Sorting (hanya kolom model langsung, bukan relasi)
+        if ($orderColumnName !== 'jalur.nama_jalur') {
+            $query->orderBy($orderColumnName, $orderDir);
+        }
+
+        // Ambil data
+        $data = $query->skip($start)->take($length)->get();
+
+        // Format untuk DataTables
+        $result = $data->map(function ($item) {
+            return [
+                'nama' => $item->nama_lengkap,
+                'nodaftar' => $item->nomor_pendaftaran,
+                'jalur' => $item->jalur->nama_jalur ?? '-',
+                'status' => $item->status
+
+            ];
+        });
+
+        return response()->json([
+            'draw' => intval($request->input('draw')),
+            'recordsTotal' => Pendaftars::where('status', 'diterima')->count(),
+            'recordsFiltered' => $recordsFiltered,
+            'data' => $result,
+        ]);
+    }
+    public function exportToExcel()
+    {
+        return Excel::download(new DataExport, 'data.xlsx'); // Download file Excel
+    }
+    public function exportSemuaJalur()
+    {
+        return Excel::download(new SemuaJalurExport, 'pendaftar_per_jalur.xlsx');
     }
 }

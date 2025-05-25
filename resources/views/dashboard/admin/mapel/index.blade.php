@@ -1,6 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <x-secondary-button type="button"><i data-feather="book" class="inline"></i></x-secondary-button>
             {{ __('Pengaturan Mata Pelajaran - Nilai Ujian') }}
         </h2>
     </x-slot>

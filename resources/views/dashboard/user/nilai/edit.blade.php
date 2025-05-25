@@ -27,7 +27,7 @@
                             <input type="number" name="nilai" value="{{ $nilai->nilai }}" required min="0" max="100" class="w-full border px-3 py-2">
                         </div>
 
-                        <x-info-button>Update</x-info-button>
+                        <x-info-button type="submit">Update</x-info-button>
                         <x-secondary-button onclick="window.history.back();">Batal</x-secondary-button>
 
                     </form>

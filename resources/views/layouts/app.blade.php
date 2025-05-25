@@ -66,6 +66,19 @@
             color: white;
             cursor: pointer;
         }
+
+        /* Tambahkan ke CSS kamu */
+
+
+        table.dataTable tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        table.dataTable td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
     </style>
 
 </head>

@@ -1,6 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <x-secondary-button type="button"><i data-feather="tool" class="inline"></i></x-secondary-button>
             {{ __('Pengaturan Sekolah') }}
         </h2>
     </x-slot>
@@ -76,6 +77,12 @@
                             <input type="text" name="ditutup" id="ditutup"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 value="{{$settings->ditutup}}">
+                        </div>
+                        <div class="mb-4">
+                            <label for="nama" class="block text-gray-700 font-semibold mb-2">Pengumuman</label>
+                            <input type="text" name="tanggal_pengumuman" id="ditutup"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="{{$settings->tanggal_pengumuman}}">
                         </div>
                         <div class="mb-4">
                             <x-primary-button type="submit">Submit</x-primary-button> <x-info-button>Tambah Data</x-info-button>

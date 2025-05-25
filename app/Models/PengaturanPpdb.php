@@ -22,12 +22,14 @@ class PengaturanPpdb extends Model
         'kop_surat',
         'tanda_tangan',
         'dibuka',
-        'ditutup'
+        'ditutup',
+        'tanggal_pengumuman',
 
     ];
     protected $casts = [
         'dibuka' => 'datetime',
         'ditutup' => 'datetime',
+        'tanggal_pengumuman' => 'datetime',
     ];
     // public function isOpen(): bool
     // {

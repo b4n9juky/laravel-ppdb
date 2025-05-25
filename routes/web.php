@@ -21,7 +21,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 // });
 
 //route buka tutup pendaftaran
-Route::get('/', [HomePpdbController::class, 'index']);
+Route::get('/', [HomePpdbController::class, 'index'])->name('welcome');
 Route::get('/welcome', [HomePpdbController::class, 'cekjadwal'])->name('masuk');
 Route::get(
     '/login/{tanggal}',
@@ -32,6 +32,8 @@ Route::get(
         return view('auth.login', ['tanggal' => $tanggal]);
     }
 );
+Route::get('/pengumuman', [PendaftaranController::class, 'pengumuman'])->name('pengumuman');
+Route::get('/pengumuman/hasil', [PendaftaranController::class, 'pengumumanDiterima'])->name('pengumuman.diterima');
 
 
 // Route::get(
@@ -77,6 +79,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/pengguna', [PenggunaController::class, 'index'])->name('pengguna.dashboard');
     Route::get('/pengguna/{id}', [PenggunaController::class, 'edit'])->name('pengguna.edit');
     Route::put('/pengguna/{id}', [PenggunaController::class, 'update'])->name('pengguna.update');
+    Route::delete('/pengguna/{id}', [PenggunaController::class, 'destroy'])->name('pengguna.hapus');
 
 
 
@@ -107,8 +110,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
     Route::get('/admin/user', [PenggunaController::class, 'cariUser'])->name('admin.userdata');
 
-    // validasi diterima
+    // export to excel
 
+    Route::get('/export', [PendaftaranController::class, 'exportToExcel'])->name('exportExcel');
+
+    //export semua jalur pendaftaran
+
+    Route::get('/export-semua-jalur', [PendaftaranController::class, 'exportSemuaJalur'])->name('exportAll');
 });
 // pencarian dengan ajax+jquery
 

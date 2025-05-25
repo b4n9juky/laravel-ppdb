@@ -36,6 +36,7 @@ class PengaturanPpdbController extends Controller
             'jalur_id' => 'required|exists:jalur_pendaftarans,id',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'tanggal_pengumuman' => 'required|date',
         ]);
 
         JadwalPendaftaran::create([
@@ -59,6 +60,7 @@ class PengaturanPpdbController extends Controller
             'jalurpendaftaran_id' => $request->jalur_id,
             'dibuka_pada' => $request->dibuka_pada,
             'ditutup_pada' => $request->ditutup_pada,
+            'tanggal_pengumuman' => $request->tanggal_pengumuman,
         ]);
 
         return response()->json(['message' => 'Data berhasil diperbarui']);
@@ -78,6 +80,7 @@ class PengaturanPpdbController extends Controller
             'tanda_tangan' => 'nullable|file|image',
             'dibuka' => 'required',
             'ditutup' => 'required|date|after_or_equal:dibuka',
+            'tanggal_pengumuman' => 'required|date',
         ]);
 
         $setting = PengaturanPpdb::findOrFail($id);
@@ -91,6 +94,7 @@ class PengaturanPpdbController extends Controller
         $setting->logo_sekolah = $request->logo_sekolah;
         $setting->tanda_tangan = $request->tanda_tangan;
         $setting->kop_surat = $request->kop_surat;
+        $setting->tanggal_pengumuman = $request->tanggal_pengumuman;
 
 
         $folder = 'kop_surat';
