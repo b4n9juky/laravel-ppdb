@@ -29,12 +29,13 @@
         </div>
 
     </div>
+
     <div class="container mx-auto px-4 py-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4">
 
             <div class="bg-white shadow rounded-lg p-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-4">Statistik Pendaftar per Jalur</h2>
-                <canvas id="jalurChart" class="w-full h-64"></canvas>
+                <canvas id="jalurChart" class="w-full"></canvas>
 
             </div>
             <!-- // menampilkan 10 user terbaru -->
@@ -51,9 +52,9 @@
                     <tbody>
                         @forelse($latestUsers as $user)
                         <tr>
-                            <td class="border px-4 py-2">{{ $user->name }}</td>
-                            <td class="border px-4 py-2">{{ $user->email }}</td>
-                            <td class="border px-4 py-2">{{ $user->created_at->format('d M Y H:i') }}</td>
+                            <td class="border px-4 py-2 text-sm">{{ $user->name }}</td>
+                            <td class="border px-4 py-2 text-sm">{{ $user->email }}</td>
+                            <td class="border px-4 py-2 text-sm">{{ $user->created_at->format('d M Y H:i') }}</td>
                         </tr>
                         @empty
                         <tr>

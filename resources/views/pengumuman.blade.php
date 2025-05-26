@@ -1,5 +1,7 @@
 @php use Illuminate\Support\Facades\Auth; @endphp
+@php use Carbon\Carbon; @endphp
 @php use App\Enums\UserRole; @endphp
+
 
 
 
@@ -1566,7 +1568,21 @@
     <section class="py-20 bg-green-50">
         <div class="max-w-6xl mx-auto px-4">
             <h2 class="text-3xl font-bold mb-12 text-center text-green-700">ℹ️ Pengumuman PPDB {{date('Y')}}</h2>
+            @if(Carbon::parse($tanggal_pengumuman)->isFuture())
+            <div class="flex flex-col justify-center items-center">
+                <div class="bg-blue-500 text-white p-8 rounded shadow">
+                    <i data-feather="alert-triangle"></i>
 
+                </div>
+                <div class="bg-red-500 text-white p-8 mt-5 rounded shadow">
+                    <p>Belum ada Pengumuman</p>
+
+                </div>
+
+            </div>
+
+
+            @else
 
             <table id="tabel-pengumuman" class="w-full text-left">
                 <thead>
@@ -1579,6 +1595,7 @@
                 <tbody>
                 </tbody>
             </table>
+            @endif
 
 
 

@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Exports\DataExport; // Import export class
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\SemuaJalurExport;
+use Illuminate\Support\Carbon;
 
 
 
@@ -432,7 +433,7 @@ class PendaftaranController extends Controller
                 'nama' => $item->nama_lengkap,
                 'nomor_daftar' => $item->nomor_pendaftaran,
                 'jalur' => $item->jalur->nama_jalur ?? '-',
-                'total_nilai' => $item->total_nilai ?? 0,
+                'total_nilai' => (float) $item->total_nilai ?? 0,
                 // 'jumlah_berkas' => $item->berkas_count,
                 'jenis_berkas' => collect($item->berkas)->map(function ($berkas) use ($item) {
                     $url = asset('storage/' . $berkas->file_path);
@@ -576,9 +577,10 @@ class PendaftaranController extends Controller
     public function pengumuman()
     {
         $waktu_pengumuman = PengaturanPpdb::select('tanggal_pengumuman')->first();
-        echo $waktu_pengumuman->tanggal_pengumuman;
+        $tanggal_pengumuman = Carbon::parse($waktu_pengumuman->tanggal_pengumuman);
 
-        return view('pengumuman');
+
+        return view('pengumuman', compact('tanggal_pengumuman'));
     }
     public function pengumumanDiterima(Request $request)
     {
