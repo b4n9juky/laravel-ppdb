@@ -69,6 +69,7 @@ class PengaturanPpdbController extends Controller
     {
 
 
+
         $request->validate([
             'nama_sekolah' => 'required',
             'alamat_sekolah' => 'required',
@@ -91,53 +92,41 @@ class PengaturanPpdbController extends Controller
         $setting->nama_kepsek = $request->nama_kepsek;
         $setting->dibuka = $request->dibuka;
         $setting->ditutup = $request->ditutup;
-        $setting->logo_sekolah = $request->logo_sekolah;
-        $setting->tanda_tangan = $request->tanda_tangan;
-        $setting->kop_surat = $request->kop_surat;
         $setting->tanggal_pengumuman = $request->tanggal_pengumuman;
 
-
-        $folder = 'kop_surat';
-
-        // Hapus semua file yang ada di folder kop_surat
-        if ($request->hasFile('kop_surat')) {
-            $files = Storage::disk('public')->files($folder);
-            foreach ($files as $file) {
-                Storage::disk('public')->delete($file);
+        // Upload logo_sekolah jika ada
+        if ($request->hasFile('logo_sekolah')) {
+            if ($setting->logo_sekolah && Storage::disk('public')->exists($setting->logo_sekolah)) {
+                Storage::disk('public')->delete($setting->logo_sekolah);
             }
 
-
-
-            // Simpan file baru dengan nama tetap (opsional)
-            $file = $request->file('kop_surat');
-            $filename = 'kop_surat.' . $file->getClientOriginalExtension(); // misalnya kop_surat.jpg
-            $path = $file->storeAs($folder, $filename, 'public');
-
-
-
-            //     // Hapus file lama jika ada
-            //     if ($setting->kop_surat && Storage::exists('public/' . $setting->kop_surat)) {
-            //         Storage::delete('public/' . $setting->kop_surat);
-            //     }
-
-            //     // Simpan file baru
-            //     $file = $request->file('kop_surat');
-            //     $filename = time() . '_' . $file->getClientOriginalName();
-
-            //     // Simpan file ke storage/app/public/kop_surat
-            //     Storage::disk('public')->putFileAs('kop_surat', $file, $filename);
-
-            //     // Simpan path relatif ke database
-            $setting->kop_surat = 'kop_surat/' . $filename;
-            // }
-
-            $setting->save();
-
-            return back()->with('pesan', 'Berhasil Di Update');
-        } else {
-            $setting->save();
-            return back()->with('pesan', 'Berhasil Di Update');
+            $path = $request->file('logo_sekolah')->store('logo_sekolah', 'public');
+            $setting->logo_sekolah = $path;
         }
+
+        // Upload tanda_tangan jika ada
+        if ($request->hasFile('tanda_tangan')) {
+            if ($setting->tanda_tangan && Storage::disk('public')->exists($setting->tanda_tangan)) {
+                Storage::disk('public')->delete($setting->tanda_tangan);
+            }
+
+            $path = $request->file('tanda_tangan')->store('tanda_tangan', 'public');
+            $setting->tanda_tangan = $path;
+        }
+
+        // Upload kop_surat jika ada
+        if ($request->hasFile('kop_surat')) {
+            if ($setting->kop_surat && Storage::disk('public')->exists($setting->kop_surat)) {
+                Storage::disk('public')->delete($setting->kop_surat);
+            }
+
+            $path = $request->file('kop_surat')->store('kop_surat', 'public');
+            $setting->kop_surat = $path;
+        }
+
+        $setting->save();
+
+        return back()->with('success', 'Data berhasil diperbarui.');
     }
 
     public function destroy($id) {}

@@ -53,18 +53,26 @@
                             <input type="file" name="logo_sekolah"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                                 placeholder="Isi logo sekolah format gambar">
+
+
+
+
                         </div>
                         <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Kop Surat Sekolah / Madrasah</label>
                             <input type="file" name="kop_surat"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Isi kop surat" required>
+                                placeholder="Isi kop surat">
+                            @if ($settings->kop_surat)
+                            <p class="mt-2 text-sm text-gray-600">Logo saat ini:</p>
+                            <img src="{{ asset('storage/' . $settings->kop_surat) }}" alt="Logo Sekolah" class="h-24 mt-1">
+                            @endif
                         </div>
                         <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Tanda Tangan Kepsek / Kamad</label>
                             <input type="file" name="tanda_tangan"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                placeholder="Isi foto tanda tangan kepsek / kamad">
+                                placeholder="Isi foto tanda tangan kepsek / kamad" value="{{$settings->tanda_tangan}}">
                         </div>
                         <div class="mb-4">
                             <label for="nama" class="block text-gray-700 font-semibold mb-2">Pendaftaran Dibuka</label>
