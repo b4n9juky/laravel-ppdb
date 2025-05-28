@@ -62,6 +62,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/datasiswa/update-massal', [PendaftaranController::class, 'updateMassal'])->name('nilai.updateMassal');
     Route::get('/admin/pendaftar/{id}/berkas', [PendaftaranController::class, 'showBerkas']);
     Route::post('/datasiswa/{id}/approve', [PendaftaranController::class, 'approve'])->name('pendaftar.approve');
+    Route::post('/datasiswa/{id}/decline', [PendaftaranController::class, 'diTolak'])->name('pendaftar.ditolak');
     Route::get('/siswa/by-jalur/{jalur_id}', [PendaftaranController::class, 'getByJalur']);
 
 
@@ -105,6 +106,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/siswa/data', [PendaftaranController::class, 'data'])->name('siswa.data');
     Route::get('/pendaftar/diterima', [PendaftaranController::class, 'pendaftarDiterima'])->name('pendaftar.diterima');
     Route::get('/pendaftar/dataditerima', [PendaftaranController::class, 'dataDiterima'])->name('pendaftar.dataditerima');
+
 
     // data tables user
 

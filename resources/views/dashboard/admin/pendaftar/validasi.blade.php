@@ -11,7 +11,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <table id="pendaftartable" class="table table-bordered">
-                   <thead class="bg-gray-200 text-xs uppercase text-gray-700">
+                    <thead class="bg-gray-200 text-xs uppercase text-gray-700">
                         <tr>
                             <th>Nomor</th>
                             <th>Nama</th>
@@ -55,15 +55,28 @@
                             {
                                 data: 'total_nilai',
                                 render: function(data) {
-                                    let value = parseFloat(data) || 0;
+                                    const nilai = parseFloat(data) || 0;
+                                    const persen = Math.min(nilai, 100);
+
+                                    // Tentukan warna berdasarkan nilai
+                                    let warna = 'bg-red-500';
+                                    if (nilai > 100 && nilai < 200) {
+                                        warna = 'bg-yellow-500';
+                                    } else if (nilai >= 200) {
+                                        warna = 'bg-green-500';
+                                    }
+
                                     return `
-                          <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                            <div class="h-4 bg-blue-500 text-white text-xs text-center leading-4" style="width: ${value}%; min-width: 2rem;">
-                              ${value}
-                            </div>
-                          </div>`;
+            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                <div class="h-4 ${warna} text-white text-xs text-center leading-4"
+                     style="width: ${persen}%; min-width: 2rem;">
+                    ${nilai}
+                </div>
+            </div> `;
+
                                 }
                             },
+
 
                             {
                                 data: 'jenis_berkas',

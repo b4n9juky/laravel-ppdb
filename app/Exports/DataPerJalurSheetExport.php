@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Pendaftars;
 use App\Models\JalurPendaftaran;
+
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithTitle;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -19,7 +20,10 @@ class DataPerJalurSheetExport implements FromCollection, WithTitle, WithHeadings
 
     public function collection()
     {
-        return Pendaftars::where('status', 'diterima')
+
+        return Pendaftars::with('jalur', 'nilaiPendaftar')
+            ->withSum('nilaiPendaftar as total_nilai', 'nilai')
+            ->where('status', 'diterima')
             ->where('jalur_pendaftaran_id', $this->jalur->id)
             ->get()
             ->map(function ($item) {
@@ -36,6 +40,7 @@ class DataPerJalurSheetExport implements FromCollection, WithTitle, WithHeadings
                     'no_telp' => $item->no_hp,
                     'jalur' => $item->jalur->nama_jalur ?? '-',
                     'status' => $item->status,
+                    'total_nilai' => $item->total_nilai, // ini otomatis hasil SUM dari relasi
                 ];
             });
     }
@@ -55,6 +60,7 @@ class DataPerJalurSheetExport implements FromCollection, WithTitle, WithHeadings
             'Nomer HP',
             'Jalur Pendaftaran',
             'Status',
+            'Total Nilai',
         ];
     }
 

@@ -30,6 +30,27 @@
                     </thead>
                 </table>
             </div>
+            <style>
+                .progress-container {
+                    background-color: #e5e7eb;
+                    /* gray-200 */
+                    border-radius: 9999px;
+                    height: 1rem;
+                    overflow: hidden;
+                }
+
+                .progress-bar {
+                    background-color: #3b82f6;
+                    /* blue-500 */
+                    color: white;
+                    height: 100%;
+                    text-align: center;
+                    line-height: 1rem;
+                    font-size: 0.75rem;
+                    border-radius: 9999px;
+                    min-width: 2rem;
+                }
+            </style>
 
             <script>
                 // Setup CSRF token untuk AJAX agar tidak 403
@@ -39,8 +60,12 @@
                     processing: true,
                     serverSide: true,
                     ajax: '{{ route("siswa.data") }}',
+                    order: [
+                        [4, 'desc']
+                    ],
+
                     columns: [{
-                            data: null,
+                            data: 'id',
                             render: (data, type, row, meta) => meta.row + meta.settings._iDisplayStart + 1
                         },
                         {
@@ -56,14 +81,26 @@
                             data: 'total_nilai',
                             render: function(data) {
                                 const nilai = parseFloat(data) || 0;
+                                const persen = Math.min(nilai, 100);
+
+                                // Tentukan warna berdasarkan nilai
+                                let warna = 'bg-red-500';
+                                if (nilai > 100 && nilai < 200) {
+                                    warna = 'bg-yellow-500';
+                                } else if (nilai >= 200) {
+                                    warna = 'bg-green-500';
+                                }
+
                                 return `
-                    <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
-                        <div class="h-4 bg-blue-500 text-white text-xs text-center leading-4"
-                             style="width: ${Math.min(nilai, 100)}%; min-width: 2rem;">
-                             ${nilai}
-                        </div>
-                    </div>`;
+            <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                <div class="h-4 ${warna} text-white text-xs text-center leading-4"
+                     style="width: ${persen}%; min-width: 2rem;">
+                    ${nilai}
+                </div>
+            </div> `;
+
                             }
+
                         },
                         {
                             data: 'jenis_berkas'
@@ -81,6 +118,7 @@
                             $(row).addClass('bg-green-100');
                         } else if (nilai <= 100) {
                             $(row).addClass('bg-red-100');
+
                         }
                     },
                     drawCallback: function() {

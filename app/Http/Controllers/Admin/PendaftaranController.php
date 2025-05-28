@@ -355,6 +355,17 @@ class PendaftaranController extends Controller
 
         return back()->with('success', $pesan);
     }
+    public function diTolak($id)
+    {
+        $pendaftar = Pendaftars::findOrFail($id);
+
+        $pendaftar->status = 'Ditolak';
+        $pesan = 'Status Pendaftar diubah menjadi Ditolak.';
+
+        $pendaftar->save();
+
+        return back()->with('success', $pesan);
+    }
     public function getByJalur($jalur_id)
     {
 
@@ -383,12 +394,13 @@ class PendaftaranController extends Controller
         $search = $request->input('search.value');
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);
-        $orderColumn = $request->input('order.0.column', 2);
+        $orderColumn = $request->input('order.0.column', 4);
+        $orderColumnKey = $request->input("columns.$orderColumn.data");
         $orderDir = $request->input('order.0.dir', 'desc');
 
         // Kolom urutan sesuai frontend
-        $columns = ['id', 'nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count'];
-        $orderColumnName = $columns[$orderColumn] ?? 'total_nilai';
+        $columns = ['id', 'nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count', 'status', 'id'];
+        $orderColumnName = $columns[$orderColumnKey] ?? 'total_nilai';
 
 
 
@@ -418,8 +430,9 @@ class PendaftaranController extends Controller
 
         // Sorting
         if ($orderColumnName === 'jalur.nama_jalur') {
-            $query->join('jalurs', 'pendaftars.jalur_id', '=', 'jalurs.id')
-                ->orderBy('jalurs.nama_jalur', $orderDir);
+            $query->join('jalur', 'pendaftars.jalur_pendaftaran_id', '=', 'jalur.id')
+                ->orderBy('jalur.nama_jalur', $orderDir)
+                ->select('pendaftars.*', 'jalur.nama_jalur as nama_jalur');
         } else {
             $query->orderBy($orderColumnName, $orderDir);
         }
@@ -432,24 +445,15 @@ class PendaftaranController extends Controller
             return [
                 'nama' => $item->nama_lengkap,
                 'nomor_daftar' => $item->nomor_pendaftaran,
-                'jalur' => $item->jalur->nama_jalur ?? '-',
+                'jalur' => $item->nama_jalur ?? ($item->jalur->nama_jalur ?? '-'),
                 'total_nilai' => (float) $item->total_nilai ?? 0,
                 // 'jumlah_berkas' => $item->berkas_count,
-                'jenis_berkas' => collect($item->berkas)->map(function ($berkas) use ($item) {
-                    $url = asset('storage/' . $berkas->file_path);
-                    $ext = pathinfo($berkas->file_path, PATHINFO_EXTENSION);
-                    if (in_array(strtolower($ext), ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'])) {
-                        return '<a href="' . $url . '" data-lightbox="berkas-' . $item->id . '" data-title="' . e($berkas->jenis_berkas) . '">
-        <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
-                            . e($berkas->jenis_berkas) . '</span>
-    </a>';
-                    } elseif (strtolower($ext) === 'pdf') {
-                        return '<a href="' . $url . '" target="_blank"> <span class="inline-flex items-center px-2 py-1 bg-green-100 text-green-700 text-sm uppercase rounded mr-1 mb-1 hover:underline cursor-pointer">'
-                            . e($berkas->jenis_berkas) . '</span></a>';
-                    } else {
-                        return '<a href="' . $url . '" target="_blank">Download File</a>';
-                    }
-                })->implode(''),
+
+                'jenis_berkas' => view('dashboard.admin.pendaftar.partials.berkas', [
+                    'berkasList' => $item->berkas,
+                    'itemId' => $item->id,
+                ])->render(),
+
                 'status' => view('dashboard.admin.pendaftar.partials.status', [
                     'status' => $item->status
                 ])->render(),
@@ -486,12 +490,21 @@ class PendaftaranController extends Controller
         $search = $request->input('search.value');
         $start = $request->input('start', 0);
         $length = $request->input('length', 10);
-        $orderColumn = $request->input('order.0.column', 3); // default ke total_nilai
+        $orderColumn = $request->input('order.0.column', 4); // default ke total_nilai
         $orderDir = $request->input('order.0.dir', 'desc');
 
+
+
+
+
+
+
         // Kolom urutan sesuai frontend
-        $columns = ['nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count'];
+        $columns = ['id', 'nama_lengkap', 'nomor_pendaftaran', 'jalur.nama_jalur', 'total_nilai', 'berkas_count', 'status', 'id'];
         $orderColumnName = $columns[$orderColumn] ?? 'total_nilai';
+        // $orderColumnIndex = $request->input('order.0.column', 4);
+        // $orderColumnKey = $request->input("columns.$orderColumnIndex.data");
+        // $orderColumnName = $columns[$orderColumnKey] ?? 'total_nilai';
 
         // Query utama
         $query = Pendaftars::with(['jalur', 'berkas'])
@@ -553,13 +566,10 @@ class PendaftaranController extends Controller
                 },
                 'action' => '
                 <div class="flex space-x-2">
-                    <form action="' . route('pendaftar.approve', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin memproses?\')">
-                        ' . csrf_field() . '<button class="inline-flex items-center px-2 py-1 text-white bg-green-600 hover:bg-green-700 rounded text-sm">
-                        <i data-feather="check" class="w-4 h-4 mr-1"></i> Approve</button>
-                    </form>
-                    <form action="' . route('pendaftar.batal', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin membatalkan?\')">
+                    
+                    <form action="' . route('pendaftar.ditolak', $item->id) . '" method="POST" onsubmit="return confirm(\'Yakin ingin membatalkan?\')">
                         ' . csrf_field() . '<button type="submit" class="inline-flex items-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm">
-                        <i data-feather="trash-2" class="w-4 h-4 mr-1"></i> Batal</button>
+                        <i data-feather="x-octagon" class="w-4 h-4 mr-1"></i> Batal</button>
                     </form>
                     <a href="' . route('siswa.editnilai', $item->id) . '" class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded text-sm">
                         <i data-feather="edit" class="w-4 h-4 mr-1"></i> Nilai</a>
