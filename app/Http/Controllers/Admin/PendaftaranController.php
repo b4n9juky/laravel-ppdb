@@ -423,11 +423,6 @@ class PendaftaranController extends Controller
 
         $recordsFiltered = $query->count();
 
-
-
-
-
-
         // Sorting
         if ($orderColumnName === 'jalur.nama_jalur') {
             $query->join('jalur', 'pendaftars.jalur_pendaftaran_id', '=', 'jalur.id')
@@ -445,14 +440,11 @@ class PendaftaranController extends Controller
             return [
                 'nama' => $item->nama_lengkap,
                 'nomor_daftar' => $item->nomor_pendaftaran,
-                'jalur' => $item->nama_jalur ?? ($item->jalur->nama_jalur ?? '-'),
+                'jalur' => $item->jalur->nama_jalur ?? '-',
                 'total_nilai' => (float) $item->total_nilai ?? 0,
                 // 'jumlah_berkas' => $item->berkas_count,
 
-                'jenis_berkas' => view('dashboard.admin.pendaftar.partials.berkas', [
-                    'berkasList' => $item->berkas,
-                    'itemId' => $item->id,
-                ])->render(),
+                'jenis_berkas' => view('dashboard.admin.pendaftar.partials.berkas', ['berkasList' => $item->berkas, 'itemId' => $item->id,])->render(),
 
                 'status' => view('dashboard.admin.pendaftar.partials.status', [
                     'status' => $item->status
@@ -492,11 +484,6 @@ class PendaftaranController extends Controller
         $length = $request->input('length', 10);
         $orderColumn = $request->input('order.0.column', 4); // default ke total_nilai
         $orderDir = $request->input('order.0.dir', 'desc');
-
-
-
-
-
 
 
         // Kolom urutan sesuai frontend
