@@ -119,6 +119,11 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     //export semua jalur pendaftaran
 
     Route::get('/export-semua-jalur', [PendaftaranController::class, 'exportSemuaJalur'])->name('exportAll');
+
+
+    //hapus user
+
+    Route::delete('/user/{id}/hapus', [PenggunaController::class, 'destroy'])->name('user.destroy');
 });
 // pencarian dengan ajax+jquery
 

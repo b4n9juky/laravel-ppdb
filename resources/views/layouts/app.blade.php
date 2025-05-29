@@ -70,6 +70,7 @@
         /* Tambahkan ke CSS kamu */
 
 
+
         table.dataTable tbody tr:hover {
             background-color: #f1f1f1;
         }

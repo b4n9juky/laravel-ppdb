@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\UserRole;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Carbon;
-
-
+use Symfony\Component\VarDumper\VarDumper;
 
 class PenggunaController extends Controller
 {
@@ -46,9 +46,14 @@ class PenggunaController extends Controller
     public function destroy($id)
     {
         $user = User::findOrFail($id);
-        $user->delete($user);
-        return redirect()->route('pengguna.dashboard')->with('succes', 'Data Berhasil di Hapus');
+        if ($user->role === UserRole::ADMIN) {
+            return redirect()->back()->with('error', 'User dengan role ADMIN tidak bisa dihapus.');
+        }
+        $user->delete();
+
+        return redirect()->route('pengguna.dashboard')->with('success', 'User berhasil dihapus.');
     }
+
     public function cariUser(Request $request)
     {
         $search = $request->input('search.value');

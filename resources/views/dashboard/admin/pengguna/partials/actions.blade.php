@@ -1,5 +1,5 @@
 <div class="flex space-x-2">
-    <form action="{{ route('pengguna.hapus', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan?')">
+    <form action="{{ route('user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Yakin ingin membatalkan?')">
         @csrf @method('DELETE')
         <button type="submit"
             class="inline-flex items-center px-2 py-1 text-white bg-red-600 hover:bg-red-700 rounded text-sm">
@@ -14,4 +14,6 @@
         class="inline-flex items-center px-2 py-1 text-white bg-blue-600 hover:bg-red-700 rounded text-sm">
         <i data-feather="edit" class="w-4 h-4 mr-1"></i> Peran
     </a>
+
+
 </div>

@@ -24,7 +24,7 @@
                         {{ __('Data Diterima') }}
                     </x-nav-link>
                     <x-nav-link :href="route('pengguna.dashboard')" :active="request()->routeIs('pengguna.dashboard')">
-                        {{ __('Data Pengguna') }}
+                        {{ __('Data Login') }}
                     </x-nav-link>
                     <x-nav-link :href="route('admin.jalurdaftar')" :active="request()->routeIs('admin.jalurdaftar')">
                         {{ __('Jalur Pendaftaran') }}
