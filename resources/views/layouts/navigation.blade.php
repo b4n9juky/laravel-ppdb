@@ -107,20 +107,51 @@
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+
+
+        <!-- // role admin -->
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+            @if (Auth::user()->role === \App\Enums\UserRole::ADMIN)
+            <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('formulir')" :active="request()->routeIs('formulir')">
-                {{ __('Formulir') }}
+            <x-responsive-nav-link :href="route('admin.datasiswa')" :active="request()->routeIs('admin.datasiswa')">
+                {{ __('Data Pendaftar') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('user.berkas')" :active="request()->routeIs('user.berkas')">
-                {{ __('Berkas') }}
+            <x-responsive-nav-link :href="route('pendaftar.diterima')" :active="request()->routeIs('pendaftar.diterima')">
+                {{ __('Data Diterima') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('nilai')" :active="request()->routeIs('nilai')">
-                {{ __('Nilai') }}
+            <x-responsive-nav-link :href="route('pengguna.dashboard')" :active="request()->routeIs('pengguna.dashboard')">
+                {{ __('Data Login') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.jalurdaftar')" :active="request()->routeIs('admin.jalurdaftar')">
+                {{ __('Jalur Pendaftaran') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.mapel')" :active="request()->routeIs('admin.mapel')">
+                {{ __('Mata Pelajaran - Nilai Ujian') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('admin.pengaturan')" :active="request()->routeIs('admin.pengaturan')">
+                {{ __('Pengaturan') }}
+            </x-responsive-nav-link>
+            @endif
         </div>
+        <div class="pt-2 pb-3 space-y-1">
+            @if (Auth::user()->role === \App\Enums\UserRole::USER)
+            <x-nav-link :href="route('user.dashboard')" :active="request()->routeIs('user.dashboard')">
+                {{ __('Dashboard') }}
+            </x-nav-link>
+            <x-nav-link :href="route('formulir')" :active="request()->routeIs('formulir')">
+                {{ __('Formulir') }}
+            </x-nav-link>
+            <x-nav-link :href="route('user.berkas')" :active="request()->routeIs('user.berkas')">
+                {{ __('Berkas') }}
+            </x-nav-link>
+            <x-nav-link :href="route('nilai')" :active="request()->routeIs('nilai')">
+                {{ __('Nilai') }}
+            </x-nav-link>
+            @endif
+        </div>
+
 
 
 
